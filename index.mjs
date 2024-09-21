@@ -4,6 +4,7 @@ import cors from 'cors';
 import bodyParser from 'body-parser';
 
 import joborderRoute from './router/joborder.mjs';
+import employeeRoute from './router/employee.mjs';
 
 const app = express();
 app.use(express.json());
@@ -20,6 +21,7 @@ app.get('/helloline', (req, res) => {
   });
 
 app.use('/joborderinquiry',joborderRoute);
+app.use('/mrquickfixemployee',employeeRoute);
 
 
   const CONNECTION_DB = process.env.ATLAS_URI || "mongodb+srv://mrquick:adminsidemrquick111@cloudsourcing.kmb2zsa.mongodb.net/MrQuick?retryWrites=true&w=majority&appName=CloudSourcing";
