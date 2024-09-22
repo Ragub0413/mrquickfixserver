@@ -20,7 +20,7 @@ export const storage = multer.diskStorage({
 const upload = multer({storage:storage});
 
 export const createNewEmployee = async(req,res)=>{
-    const {firstName,lastName,email,password,role,contactNumber,profilePicture} = req.body;
+    const {firstName,lastName,email,password,role,contactNumber} = req.body;
     console.log(firstName);
     try{
        // var dbo = db.dat
@@ -28,11 +28,11 @@ export const createNewEmployee = async(req,res)=>{
     //    const oldEmployee = await Employee.findOne({_id});
     //    if(oldEmployee) return res.status(400).json({message:'Staff already exist'});
         const hashedPassword = await bcryptjs.hash(password,12);
-        const result = await employeemodel.create({firstName,lastName,email,role,password: hashedPassword,contactNumber,profilePicture:imageName });
+        const result = await employeemodel.create({firstName,lastName,email,role,password: hashedPassword,contactNumber});
         res.status(201).json({result});
     }
     catch(err){ 
         res.status(500).json({message:err}); 
-        res
+        console.log(err)
     }
 } 
