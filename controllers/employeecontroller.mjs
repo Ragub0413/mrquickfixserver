@@ -32,7 +32,7 @@ export const createNewEmployee = async(req,res)=>{
         res.status(201).json({result});
     }
     catch(err){ 
-        res.status(500).json({message: "Something went wrong"}); 
-        console.log(err);
+        res.status(500).json({message:err}); 
+        res
     }
 } 
