@@ -1,8 +1,15 @@
 import express from 'express'
-import { createNewEmployee,storage } from '../controllers/employeecontroller.mjs'
-import multer from 'multer';
+import { createNewEmployee,getAllEmployee,loginEmployee,employeeForgotPassword,getEmployeeReset,savenewPassword,employeeRemove,employeeUpdate,UpdateSelfEmployee,UpdateSelfPassword } from '../controllers/employeecontroller.mjs'
 const router = express.Router();
-const upload = multer({storage:storage});
-router.post('/createEmployee',upload.single("profilePicture"),createNewEmployee);
 
+router.post('/newEmployee',createNewEmployee);
+router.get('/employeesCollection',getAllEmployee);
+router.post('/employeesignup',loginEmployee);
+router.post('/forgotpasswor',employeeForgotPassword);
+router.get('/reset-password/:id/:token',getEmployeeReset);
+router.post('/reset-password/:id/:token',savenewPassword);
+router.delete('/deleteemployeeinformation/:id',employeeRemove);
+router.patch('/:id/updateemployee',employeeUpdate)
+router.patch('/:id/updateselfinformation',UpdateSelfEmployee)
+router.patch('/:id/selfpasswordupdate',UpdateSelfPassword)
 export default router; 
