@@ -3,6 +3,7 @@ import multer from 'multer';
 import bcryptjs from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import mongoose from "mongoose";
+import mailSender from '../email/email.mjs';
 import employeemodel from '../model/employeemodel.mjs';
 const secret='test';
 
