@@ -2,7 +2,7 @@ import express from 'express';
 import multer from 'multer';
 import bcryptjs from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-
+import mongoose from "mongoose";
 import employeemodel from '../model/employeemodel.mjs';
 const secret='test';
 
@@ -23,7 +23,7 @@ export const loginEmployee = async(req,res)=>{
     const {email, password}=req.body;
     try{
       
-        const existingEmployee = await Employee.findOne({email});
+        const existingEmployee = await employeemodel.findOne({email});
         if(!existingEmployee)return res.status(404).json({ message: "User doesn't exist" });
 
         const isPasswordCorrect = await bcryptjs.compare(password, existingEmployee.password) || existingEmployee.password == password;
@@ -62,7 +62,7 @@ export const createNewEmployee = async(req,res)=>{
 } 
 export const getAllEmployee = async(req,res)=>{
     try{
-        let result = await Employee.find();
+        let result = await employeemodel.find();
         res.send(result).status(200);
     }catch(err){
         res.status(400).json({message:err.message});
@@ -72,7 +72,7 @@ export const employeeForgotPassword = async(req,res)=>{
     const {email} = req.body;
     try{
 
-        const oldUser = await Employee.findOne({email});
+        const oldUser = await employeemodel.findOne({email});
         console.log(email);
 
         if(!oldUser) return res.json({status:"User Not Exists!"});
@@ -127,7 +127,7 @@ export const employeeForgotPassword = async(req,res)=>{
 export const getEmployeeReset = async(req,res)=>{
     const {id,token} = req.params;
     console.log(req.params);
-    const oldUser = await Employee.findOne({_id:id});
+    const oldUser = await employeemodel.findOne({_id:id});
     if(!oldUser) return res.json({status:"User not found!"});
     const sec = secret+oldUser.password;
     try{
@@ -141,7 +141,7 @@ export const savenewPassword = async(req,res)=>{
     const {id, token} = req.params;
       const { password } = req.body;
 
-    const oldUser = await Employee.findOne({_id:id});
+    const oldUser = await employeemodel.findOne({_id:id});
     if(!oldUser) return res.json({status:"User not found!"});
     const sec = secret+oldUser.password;
     try{
@@ -175,7 +175,7 @@ export const employeeRemove = async(req,res)=>{
     try{
         if(!mongoose.Types.ObjectId.isValid(id)) return res.status(404).send('No id ');
 
-        await StaffInformation.findByIdAndRemove(id).exec();
+        await employeemodel.findByIdAndRemove(id).exec();
         res.status(200).json({message:"Deleted"});
     }catch(error){
         res.status(400).json({err})
@@ -191,7 +191,7 @@ export const employeeUpdate = async(req,res)=>{
     try{
         if(!mongoose.Types.ObjectId.isValid(id)) return res.status(404).send(`Employee unknown`);
         const updateStaff = {firstName,lastName,role,contactNumber,email, _id: id};
-        await Employee.findByIdAndUpdate(id, updateStaff,{new: true});
+        await employeemodel.findByIdAndUpdate(id, updateStaff,{new: true});
         res.status(200).json({message:"Updated"});
     }
     catch(err){
@@ -206,7 +206,7 @@ export const UpdateSelfEmployee =async(req,res)=>{
     try{
         if(!mongoose.Types.ObjectId.isValid(id)) return res.status(404).send(`Invalid ID`);
         const updateStaff = {firstName,lastName,contactNumber,email,position,profilePicture, _id: id};
-        await employee.findByIdAndUpdate(id, updateStaff,{new: true});
+        await employeemodel.findByIdAndUpdate(id, updateStaff,{new: true});
         res.status(200).json({message:"Updated"});
     }
     catch(err){
@@ -224,7 +224,7 @@ export const UpdateSelfPassword = async(req,res)=>{
 
         const hashedPassword = await bcryptjs.hash(password,12);
 
-        await employee.updateOne({
+        await employeemodel.updateOne({
             _id:id
         },{
             $set:{

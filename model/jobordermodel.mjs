@@ -4,7 +4,7 @@ const JobOrderSchema = mongoose.Schema({
     clientFirstName:{type: String},
     clientLastName:{type:String},
     email:{type:String},
-    clientsAddress:{type:String,required:true},
+    clientsAddress:{type:String},
     contactNumber:{type:String},
     typeOfJob:{type:String},
     jobCategory:{type:Array},
@@ -15,6 +15,8 @@ const JobOrderSchema = mongoose.Schema({
     dateEnded:{type: String},
     inspectionSchedule:{type:String},
     clientSurvey:{type:String},
+    clientConcern:{type:String},
+    inquiryDate:{type:String, default: new Date()}
     
 });
 
