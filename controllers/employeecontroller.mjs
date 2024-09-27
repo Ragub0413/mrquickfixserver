@@ -151,7 +151,7 @@ export const savenewPassword = async(req,res)=>{
         const encryptedPassword = await bcryptjs.hash(password,12);
         // await Employee.findByIdAndUpdate(id,password);
 
-        await Employee.updateOne(
+        await employeemodel.updateOne(
             {
                 _id:id, 
             },{ 
