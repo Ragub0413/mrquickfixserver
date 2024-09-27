@@ -6,30 +6,30 @@ import jwt from 'jsonwebtoken';
 import employeemodel from '../model/employeemodel.mjs';
 const secret='test';
 
-const router = express.Router();
-export const storage = multer.diskStorage({
-    destination: function (req,file,cb){
-        cb(null,'public/profile');
+// const router = express.Router();
+// export const storage = multer.diskStorage({
+//     destination: function (req,file,cb){
+//         cb(null,'public/profile');
 
-    },
-    filename: function (req,file,cb){
-        const uniqueSuffix = Date.now();
-        cb(null,uniqueSuffix + file.originalname);
-    }, 
-});
+//     },
+//     filename: function (req,file,cb){
+//         const uniqueSuffix = Date.now();
+//         cb(null,uniqueSuffix + file.originalname);
+//     }, 
+// });
 
-const upload = multer({storage:storage});
+// const upload = multer({storage:storage});
 
 export const createNewEmployee = async(req,res)=>{
     const {firstName,lastName,email,password,role,contactNumber,profilePicture} = req.body;
     console.log(profilePicture);
     try{
        // var dbo = db.dat
-         const imageName = req.file.filename;
+     
     //    const oldEmployee = await Employee.findOne({_id});
     //    if(oldEmployee) return res.status(400).json({message:'Staff already exist'});
         const hashedPassword = await bcryptjs.hash(password,12);
-        const result = await employeemodel.create({firstName,lastName,email,role,password: hashedPassword,contactNumber,profilePicture:imageName });
+        const result = await employeemodel.create({firstName,lastName,email,role,password: hashedPassword,contactNumber,profilePicture });
         res.status(201).json({result});
     }
     catch(err){ 
@@ -37,3 +37,11 @@ export const createNewEmployee = async(req,res)=>{
         console.log(err);
     }
 } 
+export const getAllEmployee = async(req,res)=>{
+    try{
+        let result = await Employee.find();
+        res.send(result).status(200);
+    }catch(err){
+        res.status(400).json({message:err.message});
+    }
+}

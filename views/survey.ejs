@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mr. Quick Survey</title>
+    
+</head>
+<body>
+    <div class="container">
+        <h2> MR. QUICK FIX SURVEY</h2>
+       
+        <form id="" method="post">  
+            <div class="row">
+                <div class="col-25">
+                  <label for="clientSurvey">Survey Message</label>
+                </div>
+        
+                <div class="col-75">
+                    <textarea id="clientSurvey" name="clientSurvey" placeholder="Write something.." style="height:200px"></textarea>
+                  </div>
+                
+              </div>
+              <br>
+              <div class="row">
+                <input type="submit" value="Submit">
+              </div>
+        </form>
+      </div>
+      <style>
+        /* * {
+          box-sizing: border-box;
+        } */
+        body {
+        font-family: Arial, sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        background-color: #f4f4f4;
+        margin: 0;
+    }
+        
+        input[type=text], select, textarea {
+          width: 100%;
+          padding: 12px;
+          border: 1px solid #ccc;
+          border-radius: 4px;
+          resize: vertical;
+        }
+        
+        label {
+          padding: 12px 12px 12px 0;
+          display: inline-block;
+        }
+        
+        input[type=submit] {
+          background-color: #f85f16;
+          color: white;
+          padding: 12px 20px;
+          border: none;
+          border-radius: 4px;
+          cursor: pointer;
+          float: right;
+        }
+        
+        input[type=submit]:hover {
+          background-color: #E85C0D;
+        }
+        
+        .container {
+          border-radius: 5px;
+          background-color: #f2f2f2;
+          padding: 20px;
+          width: 50%;
+        }
+        
+        .col-25 {
+          float: left;
+          width: 25%;
+          margin-top: 6px;
+        }
+        
+        .col-75 {
+          float: left;
+          width: 75%;
+          margin-top: 6px;
+        }
+        
+        /* Clear floats after the columns */
+        .row::after {
+          content: "";
+          display: table;
+          clear: both;
+        }
+        
+        /* Responsive layout - when the screen is less than 600px wide, make the two columns stack on top of each other instead of next to each other */
+        @media screen and (max-width: 600px) {
+          .col-25, .col-75, input[type=submit] {
+            width: 100%;
+            margin-top: 0;
+          }
+        }
+        </style>
+        <script>
+           var status = '<%- JSON.stringify(status) %>';
+            if(JSON.parse(status)=="verified"){
+                if(confirm("Do you want to visit our websit again?")){
+                    window.location.href = "https://mrquickfixph.netlify.app/";
+                }
+            }
+
+        </script>
+</body>
+</html> 

@@ -7,7 +7,8 @@ const EmployeeSchema = mongoose.Schema({
     password:{type:String, required:true},
     contactNumber:{type:String,required:true},
     role:{type:String,required:true},
-    profilePicture:{type:String,required:true}
+    profilePicture:{type:String,required:true},
+    adminhandle:{type:String}
 });
  
-export default mongoose.model("employeeinformation",EmployeeSchema)
+export default mongoose.model("sample-upload",EmployeeSchema)

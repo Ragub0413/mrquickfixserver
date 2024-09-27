@@ -5,4 +5,4 @@ const router = express.Router();
 const upload = multer({storage:storage});
 router.post('/createEmployee',upload.single("profilePicture"),createNewEmployee);
 
-export default router;
+export default router; 

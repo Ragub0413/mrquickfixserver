@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mr Quick Authentication</title>
+ 
+</head>
+<body>
+  <!-- <h1><%= email%></h1> -->
+  <!-- <form action="" method="post">
+    <input
+      type="password"
+      name="password"
+      id="password"
+      placeholder="password"
+    /><br />
+    <input
+      type="password"
+      name="confirm-password"
+      id="confirm-password"
+      placeholder="confirm-password"
+    /><br />
+    <input type="submit" value="submit" />
+  </form> -->
+  <div class="form-container">
+    <h2>Forgot Password</h2>
+    <form id="registrationForm" method="post">
+       
+        <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" placeholder="Enter Password" required>
+        </div>
+        <div class="form-group">
+            <label for="confirmPassword">Confirm Password</label>
+            <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirm Password" required>
+            <span id="passwordError" class="error"></span>
+        </div>
+        <button type="submit" class="submit-btn" id="submitBtn">Submit</button>
+    </form>
+</div>
+  <style>
+    body {
+        font-family: Arial, sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        background-color: #f4f4f4;
+        margin: 0;
+    }
+    .form-container {
+        background: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        width: 100%;
+        max-width: 400px;
+    }
+    .form-group {
+        margin-bottom: 15px;
+    }
+    label {
+        display: block;
+        margin-bottom: 5px;
+    }
+    input {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        box-sizing: border-box;
+    }
+    .error {
+        color: red;
+        font-size: 0.875rem;
+    }
+    .success {
+        color: green;
+        font-size: 0.875rem;
+    }
+    .submit-btn {
+        background-color: #f85f16;
+        color: #fff;
+        border: none;
+        padding: 10px;
+        border-radius: 4px;
+        cursor: pointer;
+        width: 100%;
+        font-size: 1rem;
+        opacity: 0.6; /* Initially disabled */
+        pointer-events: none; /* Initially disabled */
+    }
+    .submit-btn.enabled {
+        opacity: 1; /* Enabled */
+        pointer-events: auto; /* Enabled */
+    }
+    .submit-btn:hover {
+        background-color: #0056b3;
+    }
+</style>
+<script>
+  var status = '<%- JSON.stringify(status) %>';
+
+if (JSON.parse(status) == "verified") {
+  if (confirm("Do u want to login?")) {
+    window.location.href = "https://mrquickfixph.netlify.app/";
+  }
+}
+  document.getElementById('registrationForm').addEventListener('input', function () {
+      validateForm();
+  });
+
+  function validateForm() {
+     
+      const password = document.getElementById('password').value;
+      const confirmPassword = document.getElementById('confirmPassword').value;
+      const submitBtn = document.getElementById('submitBtn');
+      const errorElement = document.getElementById('passwordError');
+
+      let isValid = true;
+
+      if (!password || !confirmPassword) {
+          isValid = false;
+      }
+      if(password.length > 5 && confirmPassword > 5){
+        errorElement.textContent = 'Password should have minimum 4 characters'
+
+      }
+
+      if (password !== confirmPassword) {
+          errorElement.textContent = 'Passwords do not match';
+          errorElement.classList.remove('success');
+          errorElement.classList.add('error');
+          isValid = false;
+      } else {
+          errorElement.textContent = 'Passwords match';
+          errorElement.classList.remove('error');
+          errorElement.classList.add('success');
+      }
+
+      if (isValid) {
+          submitBtn.classList.add('enabled');
+          submitBtn.disabled = false;
+      } else {
+          submitBtn.classList.remove('enabled');
+          submitBtn.disabled = true;
+      }
+
+      
+  }
+</script>
+</body>
+</html>
