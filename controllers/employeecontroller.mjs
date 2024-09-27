@@ -81,7 +81,7 @@ export const employeeForgotPassword = async(req,res)=>{
         const token = jwt.sign({email:oldUser.email, id:oldUser._id},sec,{
             expiresIn:"5m",
         });
-        const link =`https://mrquickfixserver.onrender.com/employeedata/reset-password/${oldUser._id}/${token}`;
+        const link =`https://mrquickfixserver.onrender.com/mrquickfixemployee/reset-password/${oldUser._id}/${token}`;
         const mailResponse = await mailSender(
             email,
             "Verification Email",

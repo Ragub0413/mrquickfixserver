@@ -181,7 +181,7 @@ export const sendFileAttachment = async (req,res)=>{
 
 }
 export const completeStatus = async(req,res) =>{
-    const {email,jobordersId,fileattach,employeeHandle} = req.body;
+    const {email,jobordersId,comment,url,employeeHandle} = req.body;
     try{
         const transaction = await joborders.findOne({_id:jobordersId});
         console.log(jobordersId);
@@ -198,7 +198,7 @@ export const completeStatus = async(req,res) =>{
         });
 
         if(!transaction) return res.json({status:"Transaction Not Exists!"});
-        const link = `http://localhost:5000/fileuploaded/completetransaction/survey/${jobordersId}`;
+        const link = `https://mrquickfixserver.onrender.com/fileUpload/completetransaction/survey/${jobordersId}`;
         const mailResponse = await mailSender(
             email,
             "Mr. Quick Fix Complete Transaction",
@@ -236,8 +236,8 @@ export const completeStatus = async(req,res) =>{
             </body>
             </html>`,
             {
-                filename: fileattach,
-                path:`http://localhost:5000/file/${fileattach}`
+                filename: comment,
+                path:`http://localhost:5000/file/${url}`
                 // link`http://localhost:5000/file/${documentFile}`
              }
             
