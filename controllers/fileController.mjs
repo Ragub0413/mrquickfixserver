@@ -124,7 +124,7 @@ export const sendFileAttachment = async (req,res)=>{
     const {email,uploadedId,url,comment}= req.body;
   //  const {documentFile,id} = req.params;
     console.log(email);
-    console.log(fileattach)
+    // console.log(fileattach)
     
     try{
        // const link = `http://localhost:5000/file${fileattach}`
@@ -167,7 +167,7 @@ export const sendFileAttachment = async (req,res)=>{
             </body>
             </html>`,
             {
-                filename: comment,
+                filename: `${comment}.pdf`,
                 path:url
                 // link`http://localhost:5000/file/${documentFile}`
              }
@@ -182,6 +182,7 @@ export const sendFileAttachment = async (req,res)=>{
 }
 export const completeStatus = async(req,res) =>{
     const {email,jobordersId,comment,url,employeeHandle} = req.body;
+    console.log(comment)
     try{
         const transaction = await joborders.findOne({_id:jobordersId});
         console.log(jobordersId);
@@ -236,8 +237,8 @@ export const completeStatus = async(req,res) =>{
             </body>
             </html>`,
             {
-                filename: comment,
-                path:`http://localhost:5000/file/${url}`
+                filename: comment`.pdf`,
+                path:url
                 // link`http://localhost:5000/file/${documentFile}`
              }
             

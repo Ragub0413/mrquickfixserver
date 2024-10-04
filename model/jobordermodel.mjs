@@ -8,14 +8,18 @@ const JobOrderSchema = mongoose.Schema({
     contactNumber:{type:String},
     typeOfJob:{type:String},
     jobCategory:{type:Array},
+    jobQuotation:{type:String},
+    jobQuotationLink:{type:String},
+    jobQuotationpublickey:{type:String},
     jobStatus:{type:String},
     jobAdmin:{type:String},
     jobAdminId:{type:String},
     dateStarted:{type: String},
     dateEnded:{type: String},
-    inspectionSchedule:{type:String},
+    dateCancelled:{type:String},  
     clientSurvey:{type:String},
-    clientConcern:{type:String},
+    clientConcern:{type:String},      
+    surveyDate:{type:String},
     inquiryDate:{type:String, default: new Date()}
     
 });

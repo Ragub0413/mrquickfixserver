@@ -2,6 +2,12 @@ import express from 'express';
 import joborder from '../model/jobordermodel.mjs';
 import employeemodel from '../model/employeemodel.mjs';
 import mailSender from '../email/email.mjs';
+import multer from 'multer';
+import { v2 as cloudinary } from 'cloudinary';
+
+export const storageFile1 = multer.memoryStorage();
+
+
 
 export const getAllJobOders = async (req,res)=>{
     try{
@@ -118,7 +124,7 @@ export const sentEmailForInspection = async (req,res)=>{
             </body>
             </html>`
         )
-        res.status(200).json({message:"Email Sent"});
+        res.status(200).json({result});
     }
     catch(err){
         res.status(404).json({message:err.message})
@@ -126,7 +132,7 @@ export const sentEmailForInspection = async (req,res)=>{
 }
 export const createNewJobOrder =async(req,res)=>{
     const {clientFirstName,clientLastName,email,clientsAddress,typeOfJob,jobCategory,jobStatus,
-        contactNumber,jobAdmin,dateStarted,dateEnded, inspectionSchedule,jobAdminId
+        contactNumber,jobAdmin,dateStarted,dateEnded,jobAdminId,
     } = req.body;
     
     try{
@@ -204,4 +210,115 @@ export const UpdateStatusEmployee = async(req,res)=>{
         console.log(err)
     }
  
+}
+
+export const createNewInspection = async (req,res) =>{
+     const {clientFirstName,clientLastName,email,clientsAddress,typeOfJob,jobCategory,jobStatus,  dateStarted,
+        dateEnded,
+        contactNumber, inspectionSchedule,jobAdmin, jobQuotation
+    } = req.body;
+    
+}
+export const createNewJobOrders = async (req,res)=>{
+    cloudinary.config({
+        cloud_name:'dhkewdd7t',
+        api_key:'466831814531458',
+        api_secret:'QzD3d52eKtaYgmZMu8_RMYWLCC4'
+    })
+    const {clientFirstName,clientLastName,email,clientsAddress,typeOfJob,jobCategory,jobStatus,  dateStarted,
+        dateEnded,
+        contactNumber, inspectionSchedule,jobAdminId, jobQuotation
+    } = req.body;
+
+    const docuNmae =req.file.orignalname;
+    const types = req.file.mimetype;
+    const buffer = req.file.buffer;
+    try{
+        const documentFiles = await new Promise((resolve,reject)=>{ cloudinary.uploader.upload_stream((err,result1)=>{
+           if(err) throw err;
+    
+           const {url,public_id} = result1;
+            const datas = {
+                url: url,
+                public_id: public_id
+            }
+    
+            console.log(datas);
+            resolve(result1)
+        },)
+        .end(buffer);
+        })
+        const {url,public_id} = documentFiles;
+        const datas = {
+            jobQuotation:docuNmae,
+            jobQuotationLink: url,
+            jobQuotationpublickey: public_id,
+            type:types
+        }
+        console.log(datas)
+        try{
+            const result = await joborder.create({jobQuotation:docuNmae,jobQuotationLink: documentFiles.url,jobQuotationpublickey: documentFiles.public_id,
+                clientFirstName,clientLastName,email,
+                clientsAddress,
+                contactNumber,
+                jobAdminId,
+                dateStarted,
+                dateEnded,
+                typeOfJob,
+                jobCategory,
+                jobStatus
+            })
+            console.log(result);
+            const mailResponse =await mailSender(
+                email,
+                "Mr. Quick Fix",
+                `<!DOCTYPE html>
+                <html lang="en" >
+                <head>
+                    <meta charset="UTF-8">
+                    <title>Mr. Quick Fix Update Status</title>
+                    
+                
+                </head>
+                <body>
+                <!-- partial:index.partial.html -->
+                <div style="font-family: Helvetica,Arial,sans-serif;min-width:1000px;overflow:auto;line-height:2">
+                    <div style="margin:50px auto;width:70%;padding:20px 0">
+                    <div style="border-bottom:1px solid #eee">
+                        <a href="" style="font-size:1.4em;color: #00466a;text-decoration:none;font-weight:600">Mr Quick </a>
+                    </div>
+                    <p style="font-size:1.1em">Hi,</p>
+                    <p>Good Day! This email is to inform you that our staff will contact you for the next visitation and update for the project. </p>
+                    <p>Please be advice that we will contact you using the phone number that you provided.</p>
+                     <p> Please see the attached file provided for this project. This is also serves as your copy. </p>
+                    
+                    <p style="font-size:0.9em;">Regards,<br />Mr. Quick Fix</p>
+                    <hr style="border:none;border-top:1px solid #eee" />
+                    <div style="float:right;padding:8px 0;color:#aaa;font-size:0.8em;line-height:1;font-weight:300">
+                        <p>Mr Quick Fix PH</p>
+                        <p>Philippines</p>
+                    </div>
+                    </div>
+                </div>
+                <!-- partial -->
+                    
+                </body>
+                </html>`,
+                {
+                    filename: docuNmae,
+                    path:documentFiles.url
+                    // link`http://localhost:5000/file/${documentFile}`
+                 }
+            )
+            res.status(200).json({result})
+        }
+        catch(err){
+            console.log(err);
+
+        }
+    
+    }
+        catch(err){
+            console.log(err)
+        }
 }

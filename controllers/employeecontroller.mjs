@@ -174,13 +174,21 @@ export const employeeRemove = async(req,res)=>{
     
     const {id} = req.params;
     try{
-        if(!mongoose.Types.ObjectId.isValid(id)) return res.status(404).send('No id ');
-
-        await employeemodel.findByIdAndRemove(id).exec();
+        // if(!mongoose.Types.ObjectId.isValid(id)) return res.status(404).send('No id ');
+        // const employeeid = {employeemodel._id:id}
+        // await employeemodel.deleteOne(id);
+        const oldUser = await employeemodel.findOne({_id:id});
+        if(!oldUser) return res.json({status:"Employee not found"});
+        await employeemodel.deleteOne(
+            {
+                _id:id
+            }
+       
+        );
         res.status(200).json({message:"Deleted"});
     }catch(error){
-        res.status(400).json({err})
-        console.log(err)
+        res.status(400).json({message:error})
+        console.log(error)
     }
 
 }
