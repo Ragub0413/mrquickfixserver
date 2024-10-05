@@ -6,6 +6,7 @@ import { getFileUploaded,storageFile,storageFile1,
     saveSurvey } from '../controllers/fileController.mjs';
 import { fileUpload } from '../controllers/fileController.mjs';
 import multer from 'multer';
+import { updateInspectionSched } from '../controllers/jobordercontroller.mjs';
 
 const router = express.Router();
 const upload = multer({storage:storageFile});
@@ -19,6 +20,7 @@ router.post('/mailforcompletetransaction',completeStatus);
 router.get('/completetransaction/survey/:id/',getSurvey);
 router.post('/completetransaction/survey/:id',saveSurvey);
 router.post('/canceltransaction',cancelStatus);
+
 router.post('/cloudupload',upload1.single("file"),fileCloud);
 
 

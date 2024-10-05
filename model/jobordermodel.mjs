@@ -20,6 +20,7 @@ const JobOrderSchema = mongoose.Schema({
     clientSurvey:{type:String},
     clientConcern:{type:String},      
     surveyDate:{type:String},
+    inspectionSchedule:{type:String},
     inquiryDate:{type:String, default: new Date()}
     
 });

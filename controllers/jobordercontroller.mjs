@@ -137,7 +137,7 @@ export const createNewJobOrder =async(req,res)=>{
     
     try{
         const result = await joborder.create({clientFirstName,clientLastName,email,clientsAddress,typeOfJob,jobCategory,jobStatus,
-            contactNumber,jobAdmin,dateStarted,dateEnded,inspectionSchedule,jobAdminId
+            contactNumber,jobAdmin,dateStarted,dateEnded,jobAdminId
         });
 
         const employees = employeemodel.findOne({_id:jobAdminId});
@@ -218,6 +218,62 @@ export const createNewInspection = async (req,res) =>{
         contactNumber, inspectionSchedule,jobAdmin, jobQuotation
     } = req.body;
     
+}
+export const updateInspectionSched = async(req,res)=>{
+    const {id,email} = req.params;
+    const {inspectionDate} = req.body
+    try{
+    const JobOrder = joborder.findOne({_id:id});
+    if(!JobOrder) return res.json({status:"Job Order Not found"});
+    await joborder.updateOne({
+        _id:id
+    },{
+        $set:{
+            inspectionSchedule: inspectionDate
+        }
+    });
+    const sched = new Date(inspectionDate).toLocaleDateString();
+    console.log(sched);
+    const mailResponse = await mailSender(
+        email,
+        "Mr Quick Inspection Notice",
+        `<!DOCTYPE html>
+        <html lang="en" >
+        <head>
+            <meta charset="UTF-8">
+            <title>Mr Quick Schedule for Inspection</title>
+            
+        
+        </head>
+        <body>
+        <!-- partial:index.partial.html -->
+        <div style="font-family: Helvetica,Arial,sans-serif;min-width:1000px;overflow:auto;line-height:2">
+            <div style="margin:50px auto;width:70%;padding:20px 0">
+            <div style="border-bottom:1px solid #eee">
+                <a href="" style="font-size:1.4em;color: #00466a;text-decoration:none;font-weight:600">Mr Quick Inspection Schedule</a>
+            </div>
+            <p style="font-size:1.1em">Hi,</p>
+            <p>This email is to inform you that you have schedule for occular inspection with us at ${sched}</p>
+            <p>Please be advice that we will contact you using the phone number that you provided.</p>
+             <p> </p>
+            
+            <p style="font-size:0.9em;">Regards,<br />Mr. Quick</p>
+            <hr style="border:none;border-top:1px solid #eee" />
+            <div style="float:right;padding:8px 0;color:#aaa;font-size:0.8em;line-height:1;font-weight:300">
+                <p>Mr Quick PH</p>
+                <p>Philippines</p>
+            </div>
+            </div>
+        </div>
+        <!-- partial -->
+            
+        </body>
+        </html>`
+    )
+    }
+    catch(err){
+        res.status(500).json({message:err.message});
+    }
 }
 export const createNewJobOrders = async (req,res)=>{
     cloudinary.config({
