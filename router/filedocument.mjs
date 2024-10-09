@@ -16,10 +16,10 @@ router.post('/filedocument', upload.single("file"),fileUpload);
 router.post('/sendFileAttached',sendFileAttachment);
 router.get('/',getFileUploaded);
 router.post('/uploadforInprocessandCompleted',fileInprogressCompletedUpload);
-router.post('/mailforcompletetransaction',completeStatus);
+router.patch('/mailforcompletetransaction/:id/:email',completeStatus);
 router.get('/completetransaction/survey/:id/',getSurvey);
 router.post('/completetransaction/survey/:id',saveSurvey);
-router.post('/canceltransaction',cancelStatus);
+router.patch('/canceltransaction/:id/:email',cancelStatus);
 
 router.post('/cloudupload',upload1.single("file"),fileCloud);
 

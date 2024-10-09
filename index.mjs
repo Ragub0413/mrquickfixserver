@@ -7,6 +7,9 @@ import joborderRoute from './router/joborder.mjs';
 import employeeRoute from './router/employee.mjs';
 import fileRoute from './router/filedocument.mjs';
 import verification  from './router/otps.mjs';
+import projectRoute from './router/project.mjs';
+import serviceRoute from './router/services.mjs';
+import contentRouter from './router/contents.mjs'
 
 const app = express();
 app.use(express.json());
@@ -30,6 +33,9 @@ app.use('/joborderinquiry',joborderRoute);
 app.use('/mrquickfixemployee',employeeRoute);
 app.use('/fileUpload',fileRoute);
 app.use('/verification', verification);
+app.use('/projects',projectRoute);
+app.use('/servicesmrquickph', serviceRoute);
+app.use('/contentMangement',contentRouter)
 
 
   const CONNECTION_DB = process.env.ATLAS_URI || "mongodb+srv://mrquick:adminsidemrquick111@cloudsourcing.kmb2zsa.mongodb.net/MrQuick?retryWrites=true&w=majority&appName=CloudSourcing";

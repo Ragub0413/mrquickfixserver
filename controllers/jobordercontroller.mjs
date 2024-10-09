@@ -232,7 +232,7 @@ export const updateInspectionSched = async(req,res)=>{
             inspectionSchedule: inspectionDate
         }
     });
-    const sched = new Date(inspectionDate).toLocaleDateString();
+    const sched = inspectionDate
     console.log(sched);
     const mailResponse = await mailSender(
         email,
@@ -253,7 +253,87 @@ export const updateInspectionSched = async(req,res)=>{
                 <a href="" style="font-size:1.4em;color: #00466a;text-decoration:none;font-weight:600">Mr Quick Inspection Schedule</a>
             </div>
             <p style="font-size:1.1em">Hi,</p>
-            <p>This email is to inform you that you have schedule for occular inspection with us at ${sched}</p>
+            <p>This email is to inform you that your schedule for occular inspection with us has been changed. The updated date will be on ${sched}</p>
+            <p>Please be advice that we will contact you using the phone number that you provided.</p>
+             <p> </p>
+            
+            <p style="font-size:0.9em;">Regards,<br />Mr. Quick</p>
+            <hr style="border:none;border-top:1px solid #eee" />
+            <div style="float:right;padding:8px 0;color:#aaa;font-size:0.8em;line-height:1;font-weight:300">
+                <p>Mr Quick PH</p>
+                <p>Philippines</p>
+            </div>
+            </div>
+        </div>
+        <!-- partial -->
+            
+        </body>
+        </html>`
+    )
+    }
+    catch(err){
+        res.status(500).json({message:err.message});
+    }
+}
+export const updateJobStatus = async(req,res)=>{
+    cloudinary.config({
+        cloud_name:'dhkewdd7t',
+        api_key:'466831814531458',
+        api_secret:'QzD3d52eKtaYgmZMu8_RMYWLCC4'
+    })
+    const {id,email} = req.params;
+    const {dateStarted,dateEnded} = req.body
+    const docuNmae =req.file.orignalname;
+    try{
+    const JobOrder = joborder.findOne({_id:id});
+    if(!JobOrder) return res.json({status:"Job Order Not found"});
+    const buffer = req.file.buffer;
+    const documentFiles = await new Promise((resolve,reject)=>{ cloudinary.uploader.upload_stream((err,result1)=>{
+        if(err) throw err;
+ 
+        const {url,public_id} = result1;
+         const datas = {
+             url: url,
+             public_id: public_id
+         }
+ 
+         console.log(datas);
+         resolve(result1)
+     },)
+     .end(buffer);
+     })
+     const {url,public_id} = documentFiles;
+    await joborder.updateOne({
+        _id:id
+    },{
+        $set:{
+            jobQuotation:docuNmae,
+            jobQuotationLink: documentFiles.url,
+            jobQuotationpublickey: documentFiles.public_id,
+        }
+    });
+    const sched = inspectionDate
+    console.log(sched);
+    const mailResponse = await mailSender(
+        email,
+        "Mr Quick Inspection Notice",
+        `<!DOCTYPE html>
+        <html lang="en" >
+        <head>
+            <meta charset="UTF-8">
+            <title>Mr Quick Schedule for Inspection</title>
+            
+        
+        </head>
+        <body>
+        <!-- partial:index.partial.html -->
+        <div style="font-family: Helvetica,Arial,sans-serif;min-width:1000px;overflow:auto;line-height:2">
+            <div style="margin:50px auto;width:70%;padding:20px 0">
+            <div style="border-bottom:1px solid #eee">
+                <a href="" style="font-size:1.4em;color: #00466a;text-decoration:none;font-weight:600">Mr Quick Inspection Schedule</a>
+            </div>
+            <p style="font-size:1.1em">Hi,</p>
+            <p>This email is to inform you that your schedule for occular inspection with us has been changed. The updated date will be on ${sched}</p>
             <p>Please be advice that we will contact you using the phone number that you provided.</p>
              <p> </p>
             
@@ -332,7 +412,7 @@ export const createNewJobOrders = async (req,res)=>{
                 <html lang="en" >
                 <head>
                     <meta charset="UTF-8">
-                    <title>Mr. Quick Fix Update Status</title>
+                    <title>Mr. Quick Fix PH</title>
                     
                 
                 </head>
@@ -344,7 +424,7 @@ export const createNewJobOrders = async (req,res)=>{
                         <a href="" style="font-size:1.4em;color: #00466a;text-decoration:none;font-weight:600">Mr Quick </a>
                     </div>
                     <p style="font-size:1.1em">Hi,</p>
-                    <p>Good Day! This email is to inform you that our staff will contact you for the next visitation and update for the project. </p>
+                    <p>Good Day! This email is to inform you that our staff will contact you  for the visitation date and other updated for your inquiry </p>
                     <p>Please be advice that we will contact you using the phone number that you provided.</p>
                      <p> Please see the attached file provided for this project. This is also serves as your copy. </p>
                     

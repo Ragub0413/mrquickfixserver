@@ -181,25 +181,33 @@ export const sendFileAttachment = async (req,res)=>{
 
 }
 export const completeStatus = async(req,res) =>{
-    const {email,jobordersId,comment,url,employeeHandle} = req.body;
-    console.log(comment)
+    // const {email,jobordersId,comment,url,employeeHandle} = req.body;
+    const {email,id} = req.params
+  //  console.log(comment)
     try{
-        const transaction = await joborders.findOne({_id:jobordersId});
-        console.log(jobordersId);
+        const transaction = await joborders.findOne({_id:id});
+        console.log(id);
 
-        const employees = await employee.findOne({_id:employeeHandle});
-        if(!employees) return res.json({status:"Employee Not Found"});
+        // const employees = await employee.findOne({_id:employeeHandle});
+        // if(!employees) return res.json({status:"Employee Not Found"});
 
-        await employee.updateOne({
-            _id:employeeHandle
+        // await employee.updateOne({
+        //     _id:employeeHandle
+        // },{
+        //     $set:{
+        //         adminhandle: 'None'
+        //     }
+        // });
+        await joborders.updateOne({
+            _id:id
         },{
             $set:{
-                adminhandle: 'None'
+                jobStatus: 'Completed'
             }
         });
 
         if(!transaction) return res.json({status:"Transaction Not Exists!"});
-        const link = `https://mrquickfixserver.onrender.com/fileUpload/completetransaction/survey/${jobordersId}`;
+        const link = `https://mrquickfixserver.onrender.com/fileUpload/completetransaction/survey/${id}`;
         const mailResponse = await mailSender(
             email,
             "Mr. Quick Fix Complete Transaction",
@@ -223,7 +231,7 @@ export const completeStatus = async(req,res) =>{
                 <p>Hoping for another transaction with you! </p>
                
                 <p>Hoping for you to take some time to answer the survey. This will help us improve. Your input is much appreciated. </p>
-                <a href=${link}>Survery</a>
+                <a href=${link}>Feedback</a>
                 <p style="font-size:0.9em;">Regards,<br />Mr. Quick Fix</p>
                 <hr style="border:none;border-top:1px solid #eee" />
                 <div style="float:right;padding:8px 0;color:#aaa;font-size:0.8em;line-height:1;font-weight:300">
@@ -236,11 +244,11 @@ export const completeStatus = async(req,res) =>{
                 
             </body>
             </html>`,
-            {
-                filename: comment`.pdf`,
-                path:url
-                // link`http://localhost:5000/file/${documentFile}`
-             }
+            // {
+            //     filename: comment`.pdf`,
+            //     path:url
+            //     // link`http://localhost:5000/file/${documentFile}`
+            //  }
             
         )
         console.log(link);
@@ -289,19 +297,20 @@ export const saveSurvey = async(req,res)=>{
 }
 
 export const cancelStatus = async(req,res) =>{
-    const {email,jobordersId,jobStatusUpdate} = req.body;
+    // const {jobStatusUpdate} = req.body;
+    const {id,email} = req.params
     try{
-        const transaction = await joborders.findOne({_id:jobordersId});
-        console.log(jobordersId);
+        const transaction = await joborders.findOne({_id:id});
+        console.log(id);
         if(!transaction) return res.json({status:"Transaction Not Exists!"});
 
        
             // const transaction = joborders.findOne({_id:jobordersId});
             await  joborders.updateOne({
-                _id:jobordersId,
+                _id:id,
             },{
                 $set:{
-                    jobStatus: jobStatusUpdate
+                    jobStatus: "Cancelled"
                 }
             })
         // }

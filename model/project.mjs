@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
 const ProjectSchema = mongoose.Schema({
-    projectName:{type: String, required: true},
+    projectName:{type: String,},
     category:{type:Array},
     thumbnail:{type:String},
     image:{type:Array},

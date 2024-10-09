@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 
 const ServiceSchema = mongoose.Schema({
     serviceName:{type: String, required: true},
+    serviceDescription:{type:String,required:true},
     servicePhoto:{type:String}
 });
  
