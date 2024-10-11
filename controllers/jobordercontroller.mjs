@@ -458,3 +458,21 @@ export const createNewJobOrders = async (req,res)=>{
             console.log(err)
         }
 }
+export const deleteCustomerInquiry= async(req, res)=>{
+    const {id} = req.params
+    try{
+        const customerInquiry = await joborder.findOne({_id:id}) 
+        if(!customerInquiry) return res.json({status:"Invalid job order id "});
+
+        await joborder.deleteOne(
+            {
+                _id:id
+            }
+        );
+        res.status(200).json({message:"Delete INQUIRY"})
+    }
+    catch(error){
+        res.status(400).json({message:error.message})
+        console.log(error)
+    }
+}

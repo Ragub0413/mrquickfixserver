@@ -21,6 +21,7 @@ const secret='test';
 
 // const upload = multer({storage:storage});
 export const loginEmployee = async(req,res)=>{
+   
     const {email, password}=req.body;
     try{
       
@@ -37,6 +38,31 @@ export const loginEmployee = async(req,res)=>{
         // });
        
 
+         res.status(200).json({ result: existingEmployee}); 
+
+    }catch(err){
+        res.status(500).json({ message: "Something went wrong" });
+        console.log(err.message);
+    }
+}
+export const validateEmail = async(req,res)=>{
+   
+    const {email}=req.params;
+    try{
+      
+        const existingEmployee = await employeemodel.findOne({email});
+        // if(!existingEmployee)return res.status(404).json({ message: "User doesn't exist" });
+
+        // const isPasswordCorrect = await bcryptjs.compare(password, existingEmployee.password) || existingEmployee.password == password;
+        // // const token = jwt.sign({ email: oldUser.email, id: oldUser._id }, secret, { expiresIn: "1h" });
+        // if (!isPasswordCorrect) return res.status(400).json({ message: "Invalid credentials" });
+        
+        // // const sec = secret+existingEmployee.password;
+        // // const token = jwt.sign({email:existingEmployee.email, id:existingEmployee._id},sec,{
+        // //     expiresIn:"5h",
+        // // });
+       
+        
          res.status(200).json({ result: existingEmployee}); 
 
     }catch(err){
@@ -76,7 +102,7 @@ export const employeeForgotPassword = async(req,res)=>{
         const oldUser = await employeemodel.findOne({email});
         console.log(email);
 
-        if(!oldUser) return res.json({status:"User Not Exists!"});
+        if(!oldUser) return res.status(404).json({ message: "User doesn't exist" });
 
         const sec = secret+oldUser.password;
         const token = jwt.sign({email:oldUser.email, id:oldUser._id},sec,{
@@ -167,7 +193,7 @@ export const savenewPassword = async(req,res)=>{
        // res.json({message:"password updated"});
     }catch(err){
         console.log(err);
-        res.json({ status: "Something Went Wrong" });
+        res.status(400).json({message:err})
     }
 }
 export const employeeRemove = async(req,res)=>{

@@ -202,7 +202,8 @@ export const completeStatus = async(req,res) =>{
             _id:id
         },{
             $set:{
-                jobStatus: 'Completed'
+                jobStatus: 'Completed',
+                jobCompletion: new Date()
             }
         });
 
@@ -310,7 +311,8 @@ export const cancelStatus = async(req,res) =>{
                 _id:id,
             },{
                 $set:{
-                    jobStatus: "Cancelled"
+                    jobStatus: "Cancelled",
+                    dateCancelled: new Date().toLocaleDateString()
                 }
             })
         // }
