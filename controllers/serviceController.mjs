@@ -47,3 +47,21 @@ export const getAllServices = async(req,res)=>{
         res.status(400).json({message:err.message});
     }
 }
+
+export const deleteService =async(req,res)=>{
+    const {id} = req.params;
+    try{
+        const oldUser = await service.findOne({_id:id});
+        if(!oldUser) return res.json({status:"Service not found"});
+        await service.deleteOne(
+            {
+                _id:id
+            }
+       
+        );
+        res.status(200).json({message:"Deleted"});
+    }catch(err){
+        res.status(400).json({message:err})
+        console.log(err)
+    }
+}

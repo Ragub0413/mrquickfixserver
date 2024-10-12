@@ -303,7 +303,7 @@ export const cancelStatus = async(req,res) =>{
     try{
         const transaction = await joborders.findOne({_id:id});
         console.log(id);
-        if(!transaction) return res.json({status:"Transaction Not Exists!"});
+        if(!transaction) return res.status(400).json({status:"Transaction Not Exists!"});
 
        
             // const transaction = joborders.findOne({_id:jobordersId});
@@ -312,7 +312,7 @@ export const cancelStatus = async(req,res) =>{
             },{
                 $set:{
                     jobStatus: "Cancelled",
-                    dateCancelled: new Date().toLocaleDateString()
+                    dateCancelled: new Date()
                 }
             })
         // }

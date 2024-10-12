@@ -5,7 +5,7 @@ import Employee from '../model/employeemodel.mjs';
 const router = express.Router();
 
 export const sendOTP = async(req,res)=>{
-    const {email}=req.body;
+    const {email}=req.params;
     try{    
        
 
@@ -51,16 +51,25 @@ export const sendOTP = async(req,res)=>{
 }
 
 export const autOTP = async(req,res) => {
-    const {email,otp} = req.body;
+    const {email} = req.params
+    const {otp} = req.body;
     try{
       
         const response = await Otpmodel.find({email}).sort({createdAt: -1}).limit(1);
-        if(response.length===0|| otp !== response[0].otp){
+       // console.log(response)
+        if(response.length===0){
             return res.status(400).json({
                 success: false,
                 message: 'OTP is not valid'
                 
             })
+        }
+        else if (otp !== response[0].otp) {
+			// Invalid OTP
+			return res.status(400).json({
+				success: false,
+				message: "The OTP is not valid",
+			});
         }
         res.status(200).json({ result: response});
     }catch(error){

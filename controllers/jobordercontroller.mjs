@@ -270,6 +270,8 @@ export const updateInspectionSched = async(req,res)=>{
         </body>
         </html>`
     )
+
+    res.status(200).send("Sent Email and updated inspection date")
     }
     catch(err){
         res.status(500).json({message:err.message});
@@ -459,7 +461,7 @@ export const createNewJobOrders = async (req,res)=>{
         }
 }
 export const deleteCustomerInquiry= async(req, res)=>{
-    const {id} = req.params
+    const {id,email} = req.params
     try{
         const customerInquiry = await joborder.findOne({_id:id}) 
         if(!customerInquiry) return res.json({status:"Invalid job order id "});
@@ -469,10 +471,318 @@ export const deleteCustomerInquiry= async(req, res)=>{
                 _id:id
             }
         );
+        const mailResponse =await mailSender(
+            email,
+            "Mr. Quick Fix",
+            `<!DOCTYPE html>
+            <html lang="en" >
+            <head>
+                <meta charset="UTF-8">
+                <title>Mr. Quick Fix Customer Unresponsive Notice</title>
+                
+            
+            </head>
+            <body>
+            <!-- partial:index.partial.html -->
+            <div style="font-family: Helvetica,Arial,sans-serif;min-width:1000px;overflow:auto;line-height:2">
+                <div style="margin:50px auto;width:70%;padding:20px 0">
+                <div style="border-bottom:1px solid #eee">
+                    <a href="" style="font-size:1.4em;color: #00466a;text-decoration:none;font-weight:600">Mr Quick Unresponsive </a>
+                </div>
+                <p style="font-size:1.1em">Hi,</p>
+                <p>Good Day! This email is to inform you that we tried to contact you 
+                for 3-5 times to inform you about the process and other details to continue the project. </p>
+                 <p>Unfortunately we decided to remove your inquiry to our list due to being unresponsive. You can submit your inquiry again to 
+                 our website or directly message us to our social media accounts. Thank you!</p>
+                
+                <p style="font-size:0.9em;">Regards,<br />Mr. Quick Fix</p>
+                <hr style="border:none;border-top:1px solid #eee" />
+                <div style="float:right;padding:8px 0;color:#aaa;font-size:0.8em;line-height:1;font-weight:300">
+                    <p>Mr Quick Fix PH</p>
+                    <p>Philippines</p>
+                </div>
+                </div>
+            </div>
+            <!-- partial -->
+                
+            </body>
+            </html>`,
+            // {
+            //     filename: docuNmae,
+            //     path:documentFiles.url
+            //     // link`http://localhost:5000/file/${documentFile}`
+            //  }
+        )
         res.status(200).json({message:"Delete INQUIRY"})
     }
     catch(error){
         res.status(400).json({message:error.message})
         console.log(error)
+    }
+}
+
+export const clientInquirytoInProgress = async(req,res)=>{
+    cloudinary.config({
+        cloud_name:'dhkewdd7t',
+        api_key:'466831814531458',
+        api_secret:'QzD3d52eKtaYgmZMu8_RMYWLCC4'
+    })
+    
+    const {id,email} = req.params
+    const {contactNumber,clientsAddress,dateStarted,dateEnded,typeOfJob,jobCategory,jobAdminId} = req.body;
+    const docuNmae =req.file.orignalname;
+    try{
+    const JobOrder = joborder.findOne({_id:id});
+    if(!JobOrder) return  res.status(404).send("Job order not found");
+    const buffer = req.file.buffer;
+    const documentFiles = await new Promise((resolve,reject)=>{ cloudinary.uploader.upload_stream((err,result1)=>{
+        if(err) throw err;
+ 
+        const {url,public_id} = result1;
+         const datas = {
+             url: url,
+             public_id: public_id
+         }
+ 
+         console.log(datas);
+         resolve(result1)
+     },)
+     .end(buffer);
+     })
+    await joborder.updateOne({
+        _id:id
+    },{
+        $set:{
+            jobStatus: 'In Progress',
+            clientsAddress:clientsAddress,
+            contactNumber:contactNumber,
+            jobQuotation:docuNmae,
+            jobQuotationLink: documentFiles.url,
+            jobQuotationpublickey: documentFiles.public_id,
+            dateStarted:dateStarted,
+            dateEnded:dateEnded,
+            jobCategory:jobCategory,
+            typeOfJob: typeOfJob,
+            jobAdminId: jobAdminId,
+
+        }
+    });
+    const mailResponse =await mailSender(
+        email,
+        "Mr. Quick Fix",
+        `<!DOCTYPE html>
+        <html lang="en" >
+        <head>
+            <meta charset="UTF-8">
+            <title>Mr. Quick Fix PH</title>
+            
+        
+        </head>
+        <body>
+        <!-- partial:index.partial.html -->
+        <div style="font-family: Helvetica,Arial,sans-serif;min-width:1000px;overflow:auto;line-height:2">
+            <div style="margin:50px auto;width:70%;padding:20px 0">
+            <div style="border-bottom:1px solid #eee">
+                <a href="" style="font-size:1.4em;color: #00466a;text-decoration:none;font-weight:600">Mr Quick Project Update</a>
+            </div>
+            <p style="font-size:1.1em">Hi,</p>
+            <p>Good Day! This email is to inform you that we already <b>In Progress</b> with this project.
+            This project starts at ${dateStarted} and end at ${dateEnded}</p>
+            <p>Please be advice that we will contact you with other details using the phone number that you provided.</p>
+             <p>The file attached is the <b>Quotation File</b> of this project. This will also served as your copy. </p>
+             <p>Thank you for trusting Mr. Quick Fix!</p>
+            
+            <p style="font-size:0.9em;">Regards,<br />Mr. Quick Fix</p>
+            <hr style="border:none;border-top:1px solid #eee" />
+            <div style="float:right;padding:8px 0;color:#aaa;font-size:0.8em;line-height:1;font-weight:300">
+                <p>Mr Quick Fix PH</p>
+                <p>Philippines</p>
+            </div>
+            </div>
+        </div>
+        <!-- partial -->
+            
+        </body>
+        </html>`,
+        {
+            filename: docuNmae,
+            path:documentFiles.url
+            // link`http://localhost:5000/file/${documentFile}`
+         }
+    )
+    res.status(200).send("Updated Module")
+}
+catch(err){
+    return res.status(400).json({message:err.message})
+}
+
+}
+export const clientinquirytoOnProcess = async(req,res)=>{
+    const {id,email} = req.params;
+    const {inspectionSchedule,clientsAddress,jobCategory,contactNumber, typeOfJob} = req.body;
+try{
+
+
+    const mailResponse = await mailSender(
+        email,
+        "Mr Quick Inspection Notice",
+        `<!DOCTYPE html>
+        <html lang="en" >
+        <head>
+            <meta charset="UTF-8">
+            <title>Mr Quick Schedule for Inspection</title>
+            
+        
+        </head>
+        <body>
+        <!-- partial:index.partial.html -->
+        <div style="font-family: Helvetica,Arial,sans-serif;min-width:1000px;overflow:auto;line-height:2">
+            <div style="margin:50px auto;width:70%;padding:20px 0">
+            <div style="border-bottom:1px solid #eee">
+                <a href="" style="font-size:1.4em;color: #00466a;text-decoration:none;font-weight:600">Mr Quick Inquiry Update</a>
+            </div>
+            <p style="font-size:1.1em">Hi</p>
+            <p>This email is to inform you that your inquiry is already <b>On process</b> and you have schedule for occular inspection with us at ${inspectionSchedule}. </p>
+                <p>Please be advice that we will contact you using the phone number that you provided.</p>
+                 <p> Thank you for trusting Mr. Quick Fix!</p>
+            
+            <p style="font-size:0.9em;">Regards,<br />Mr. Quick</p>
+            <hr style="border:none;border-top:1px solid #eee" />
+            <div style="float:right;padding:8px 0;color:#aaa;font-size:0.8em;line-height:1;font-weight:300">
+                <p>Mr Quick PH</p>
+                <p>Philippines</p>
+            </div>
+            </div>
+        </div>
+        <!-- partial -->
+            
+        </body>
+        </html>`
+    )
+    await joborder.updateOne({
+        _id:id
+    },{
+        $set:{
+            jobStatus:'On Process',
+            inspectionSchedule:inspectionSchedule,
+          clientsAddress: clientsAddress,
+          jobCategory: jobCategory,
+          typeOfJob: typeOfJob,
+          contactNumber: contactNumber
+        }
+    });
+    res.status(201).send("Updated Data");
+}
+catch(err){
+    return res.status(400).json({message:json})
+}
+}
+export const onProcesstoInprogress = async(req,res)=>{
+    cloudinary.config({
+        cloud_name:'dhkewdd7t',
+        api_key:'466831814531458',
+        api_secret:'QzD3d52eKtaYgmZMu8_RMYWLCC4'
+    })
+    const {id,email} = req.params
+    const {dateStarted,dateEnded} = req.body;
+    const docuNmae = req.file.originalname;
+    try{
+        const JobOrder = joborder.findOne({_id:id});
+        if(!JobOrder) return  res.status(404).send("Job order not found");
+        const buffer = req.file.buffer;
+        const documentFiles = await new Promise((resolve,reject)=>{ cloudinary.uploader.upload_stream((err,result1)=>{
+            if(err) throw err;
+     
+            const {url,public_id} = result1;
+             const datas = {
+                 url: url,
+                 public_id: public_id
+             }
+     
+             console.log(datas);
+             resolve(result1)
+         },)
+         .end(buffer);
+         })
+
+         await joborder.updateOne({
+            _id:id
+        },{
+            $set:{
+                jobStatus: 'In Progress',
+               
+                jobQuotation:docuNmae,
+                jobQuotationLink: documentFiles.url,
+                jobQuotationpublickey: documentFiles.public_id,
+                dateStarted:dateStarted,
+                dateEnded:dateEnded,
+    
+            }
+        });
+        const mailResponse =await mailSender(
+            email,
+            "Mr. Quick Fix",
+            `<!DOCTYPE html>
+            <html lang="en" >
+            <head>
+                <meta charset="UTF-8">
+                <title>Mr. Quick Fix PH</title>
+                
+            
+            </head>
+            <body>
+            <!-- partial:index.partial.html -->
+            <div style="font-family: Helvetica,Arial,sans-serif;min-width:1000px;overflow:auto;line-height:2">
+                <div style="margin:50px auto;width:70%;padding:20px 0">
+                <div style="border-bottom:1px solid #eee">
+                    <a href="" style="font-size:1.4em;color: #00466a;text-decoration:none;font-weight:600">Mr Quick Project Update</a>
+                </div>
+                <p style="font-size:1.1em">Hi,</p>
+                <p>Good Day! This email is to inform you that we already <b>In Progress</b> with this project.
+                This project starts at ${dateStarted} and end at ${dateEnded}</p>
+                <p>Please be advice that we will contact you with other details using the phone number that you provided.</p>
+                 <p>The file attached is the <b>Quotation File</b> of this project. This will also served as your copy. </p>
+                 <p>Thank you for trusting Mr. Quick Fix!</p>
+                
+                <p style="font-size:0.9em;">Regards,<br />Mr. Quick Fix</p>
+                <hr style="border:none;border-top:1px solid #eee" />
+                <div style="float:right;padding:8px 0;color:#aaa;font-size:0.8em;line-height:1;font-weight:300">
+                    <p>Mr Quick Fix PH</p>
+                    <p>Philippines</p>
+                </div>
+                </div>
+            </div>
+            <!-- partial -->
+                
+            </body>
+            </html>`,
+            {
+                filename: docuNmae,
+                path:documentFiles.url
+                // link`http://localhost:5000/file/${documentFile}`
+             }
+        )
+    
+        res.status(200).send("Updated Module")
+    
+    }
+    catch(error){
+       res.status(400).json({message:error.message})
+    }
+
+}
+
+
+
+export const filterComplete = async(req,res)=>{
+    const {jobStatus} = req.params;
+
+    try{
+        let result = joborder.find({jobStatus:jobStatus});
+        //if(!jobs) return res.status(400).send("This Job status is invalid");
+        res.send(result).status(200);
+    }
+    catch(err){
+        return res.status(400).json({message:err.message})
     }
 }

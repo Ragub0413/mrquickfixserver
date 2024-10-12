@@ -117,8 +117,6 @@ export const employeeForgotPassword = async(req,res)=>{
             <head>
                 <meta charset="UTF-8">
                 <title>Mr Qui - OTP Email</title>
-                
-             
             </head>
             <body>
             <!-- partial:index.partial.html -->
@@ -128,7 +126,7 @@ export const employeeForgotPassword = async(req,res)=>{
                     <a href="" style="font-size:1.4em;color: #00466a;text-decoration:none;font-weight:600">Mr Quick</a>
                 </div>
                 <p style="font-size:1.1em">Hi,</p>
-                <p>This is to ensure this account information. Click the link provided to complete you Password Recovery Procedure. This link will expire after 15 minutes</p>
+                <p>This is to ensure this account information. Click the link provided to complete your Change Password Procedure. This link will expire after 15 minutes</p>
                 <a href=${link}>
                 <h2 style="background: #00466a;margin: 0 auto;width: max-content;padding: 0 10px;color: #fff;border-radius: 4px;">Click This link</h2></a>
                 <p style="font-size:0.9em;">Regards,<br />Mr. Quick</p>
