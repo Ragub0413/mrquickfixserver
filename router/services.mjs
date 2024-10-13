@@ -7,6 +7,6 @@ const upload = multer({storage:storage});
 
 router.post('/newService',upload.single("servicePhoto"),newService);
 router.get('/',getAllServices);
-router.delete('/deleteservice',deleteService)
+router.delete('/deleteservice/:id',deleteService)
 
 export default router;
