@@ -1,5 +1,5 @@
 import express from 'express'
-import { createNewEmployee,getAllEmployee,loginEmployee,employeeForgotPassword,getEmployeeReset,savenewPassword,employeeRemove,employeeUpdate,UpdateSelfEmployee,UpdateSelfPassword, validateEmail } from '../controllers/employeecontroller.mjs'
+import { createNewEmployee,getAllEmployee,loginEmployee,employeeForgotPassword,getEmployeeReset,savenewPassword,employeeRemove,employeeUpdate,UpdateSelfEmployee,UpdateSelfPassword, validateEmail, updateProfile } from '../controllers/employeecontroller.mjs'
 const router = express.Router();
 
 router.post('/newEmployee',createNewEmployee);
@@ -12,5 +12,6 @@ router.delete('/deleteemployeeinformation/:id',employeeRemove);
 router.patch('/:id/updateemployee',employeeUpdate)
 router.patch('/:id/updateselfinformation',UpdateSelfEmployee)
 router.patch('/:id/selfpasswordupdate',UpdateSelfPassword);
-router.get('/employeevalidate/:email',validateEmail)
+router.get('/employeevalidate/:email',validateEmail);
+router.patch('/updateprofile/:id',updateProfile)
 export default router; 

@@ -107,3 +107,21 @@ export const deleteProject =async(req,res)=>{
         console.log(err)
     }
 }
+export const editProject  =async(req,res) =>{
+    cloudinary.config({
+        cloud_name:'dhkewdd7t',
+        api_key:'466831814531458',
+        api_secret:'QzD3d52eKtaYgmZMu8_RMYWLCC4'
+    })
+    const {id} = req.params;
+    const {thumbnail,projectName,category,uploadedDate} = req.body; 
+
+    try{
+        const checkProject = await project.findOne({_id:id});
+        if(!checkProject) return res.status(404).json({message:"Project not found"});
+
+    }catch(err){
+        res.status(500).json({message:err.message})
+        console.log(err)
+    }
+}

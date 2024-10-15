@@ -270,3 +270,27 @@ export const UpdateSelfPassword = async(req,res)=>{
         console.log(err);
     }
 }
+
+
+
+export const updateProfile =async(req,res)=>{
+    const {id} = req.params;
+    const {profilePicture} = req.body
+    try{
+        const currentEmployee = await employeemodel.findOne({_id:id});
+        if(!currentEmployee) return res.status(404).json({message:"Employee not found"});
+
+        await employeemodel.updateOne({
+            _id:id
+        },{ 
+            $set:{
+                profilePicture: profilePicture
+            }
+        });
+        res.status(200).json({result:currentEmployee})
+    }
+    catch(err){
+        res.status(500).json({message:err.message})
+        console.log(err)
+    }
+}

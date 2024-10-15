@@ -65,3 +65,15 @@ export const deleteService =async(req,res)=>{
         console.log(err)
     }
 }
+
+export const editServices = async(req,res)=>{
+    const {id} = req.params;
+    const {serviceName,serviceDescription,servicePhoto} = req.body;
+    try{
+
+        
+    }catch(err){
+        console.log(err)
+        res.status(500).json({message:err.message});
+    }
+}

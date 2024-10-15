@@ -8,6 +8,7 @@ import joborders from "../model/jobordermodel.mjs";
 import filedocument from '../model/filedocument.mjs';
 import { v2 as cloudinary } from 'cloudinary';
 import { render } from 'ejs';
+import employeemodel from '../model/employeemodel.mjs';
 
 export const storageFile = multer.diskStorage({
     destination: function(req,file,cb){
@@ -182,30 +183,34 @@ export const sendFileAttachment = async (req,res)=>{
 }
 export const completeStatus = async(req,res) =>{
     // const {email,jobordersId,comment,url,employeeHandle} = req.body;
-    const {email,id} = req.params
+    const {email,id,jobAdminId} = req.params
   //  console.log(comment)
     try{
         const transaction = await joborders.findOne({_id:id});
         console.log(id);
+      
 
-        // const employees = await employee.findOne({_id:employeeHandle});
-        // if(!employees) return res.json({status:"Employee Not Found"});
+        const employees = await employee.findOne({_id:jobAdminId});
+        if(!employees) return res.json({status:"Employee Not Found"});
 
-        // await employee.updateOne({
-        //     _id:employeeHandle
-        // },{
-        //     $set:{
-        //         adminhandle: 'None'
-        //     }
-        // });
+        await employee.updateOne({
+            _id:jobAdminId
+        },{
+            $set:{
+                adminhandle: 'None'
+            }
+        });
         await joborders.updateOne({
             _id:id
         },{
             $set:{
                 jobStatus: 'Completed',
-                jobCompletion: new Date()
+                jobCompletion: new Date(),
+            
             }
         });
+      
+        await employee.updateOne()
 
         if(!transaction) return res.json({status:"Transaction Not Exists!"});
         const link = `https://mrquickfixserver.onrender.com/fileUpload/completetransaction/survey/${id}`;
@@ -476,4 +481,7 @@ console.log(err)
 }
 
 
- 
+ export const EmployeeData = async(req,res)=>{
+    const {id} = req.body;
+    
+ }
