@@ -4,6 +4,7 @@ import employeemodel from '../model/employeemodel.mjs';
 import mailSender from '../email/email.mjs';
 import multer from 'multer';
 import { v2 as cloudinary } from 'cloudinary';
+import notificationmodel from '../model/notificationmodel.mjs';
 
 export const storageFile1 = multer.memoryStorage();
 
@@ -36,6 +37,8 @@ export const customerInquiry = async(req,res)=>{
             clientFirstName, clientLastName, email,
             contactNumber,clientConcern,jobStatus
         })
+        if(jobStatus === "Customer Inquiry") await notificationmodel.create({clientsFirstName:clientFirstName, clientsLastName:clientLastName, clientsConcern:clientConcern})
+       
 
         const mailResponse =await mailSender(
             email,
@@ -86,6 +89,8 @@ export const sentEmailForInspection = async (req,res)=>{
         const result = await joborder.create({clientFirstName,clientLastName,email,clientsAddress,typeOfJob,jobCategory,jobStatus,
             contactNumber,jobAdmin,dateStarted,dateEnded,inspectionSchedule
         });
+       
+     
         const sched = new Date(inspectionSchedule).toLocaleDateString();
         console.log(sched);
         const mailResponse = await mailSender(
@@ -136,6 +141,7 @@ export const createNewJobOrder =async(req,res)=>{
     } = req.body;
     
     try{
+      
         const result = await joborder.create({clientFirstName,clientLastName,email,clientsAddress,typeOfJob,jobCategory,jobStatus,
             contactNumber,jobAdmin,dateStarted,dateEnded,jobAdminId
         });
@@ -149,7 +155,8 @@ export const createNewJobOrder =async(req,res)=>{
                 adminhandle: 'Yes'
             }
         });
-     
+
+      
         const mailResponse =await mailSender(
             email,
             "Mr. Quick Fix",

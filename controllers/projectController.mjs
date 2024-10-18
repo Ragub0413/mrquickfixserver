@@ -18,7 +18,7 @@ export const uploadManyImage = async(req,res)=>{
         api_key:'466831814531458',
         api_secret:'QzD3d52eKtaYgmZMu8_RMYWLCC4'
     })
-    const { image,file,category, thumbnail,projectName } = req.body;
+    const {category, thumbnail,projectName } = req.body;
    
   // const docname = req.files.originalname
 
@@ -41,10 +41,7 @@ try{
                     cloudinary.uploader.upload_stream((err,result1)=>{
                         if(err) throw err;
                         const {url,public_id} = result1;
-                        const datas = {
-                            url: url,
-                            // public_id: public_id
-                        }
+                        const datas=url
                         resolve(datas)
                     }).end(image.buffer);
                 
@@ -71,7 +68,8 @@ try{
         //  .end(buffer);
         //  })
         //  const {url,public_id} = documentFiles;
-        const result = await project.create({projectName,category,image:uploads,thumbnail})
+      const result = await project.create({projectName,category,image:uploads,thumbnail})
+      // console.log({image:uploads})
         res.status(200).json({result});
 
     }catch(err){
@@ -114,14 +112,77 @@ export const editProject  =async(req,res) =>{
         api_secret:'QzD3d52eKtaYgmZMu8_RMYWLCC4'
     })
     const {id} = req.params;
-    const {thumbnail,projectName,category,uploadedDate} = req.body; 
+    const {thumbnail,projectName,category} = req.body; 
 
     try{
         const checkProject = await project.findOne({_id:id});
         if(!checkProject) return res.status(404).json({message:"Project not found"});
+        const limit = pLimit(10);
+        let imageBuff = req.files;
+        let images =[];
+
+        imageBuff.map((iB)=>{
+            images.push(iB)
+        })
+        const imageToUpload = images.map((image)=>{
+            return limit(async () =>{
+                const results = await new Promise((resolve,reject)=>{
+                    cloudinary.uploader.upload_stream((err,result1)=>{
+                        if(err) throw err;
+                        const {url,public_id} = result1;
+                        const datas=url
+                        resolve(datas)
+                    }).end(image.buffer);
+                
+                })
+                return results;
+            })
+        
+        });
+        let uploads = await Promise.all(imageToUpload);
+        console.log(uploads);
+
+        await project.updateOne({
+            _id:id
+        },{
+            $set:{
+               projectName: projectName,
+               category:category,
+               uploadedDate: new Date(),
+               thumbnail: thumbnail,
+               image:uploads
+            }
+        });
+    
+        res.status(200).json({checkProject})
 
     }catch(err){
         res.status(500).json({message:err.message})
         console.log(err)
+    }
+}
+
+
+export const editDetails = async(req,res)=>{
+    const {id} = req.params
+    const {projectName,category,thumbnail} = req.body;
+    try{
+        const checkProject = await project.findOne({_id:id});
+        if(!checkProject) return res.status(400).json({message:"Project not found"});
+        await project.updateOne({
+            _id:id
+        },{
+            $set:{
+               projectName: projectName,
+               category:category,
+               uploadedDate: new Date(),
+                thumbnail: thumbnail
+            }
+        });
+        res.status(200).json({checkProject})
+    }
+    catch(err){
+        res.status(500).json({message:err.message})
+        console.log(err);
     }
 }

@@ -183,23 +183,23 @@ export const sendFileAttachment = async (req,res)=>{
 }
 export const completeStatus = async(req,res) =>{
     // const {email,jobordersId,comment,url,employeeHandle} = req.body;
-    const {email,id,jobAdminId} = req.params
+    const {email,id} = req.params
   //  console.log(comment)
     try{
         const transaction = await joborders.findOne({_id:id});
         console.log(id);
       
 
-        const employees = await employee.findOne({_id:jobAdminId});
-        if(!employees) return res.json({status:"Employee Not Found"});
+        // const employees = await employee.findOne({_id:jobAdminId});
+        // if(!employees) return res.json({status:"Employee Not Found"});
 
-        await employee.updateOne({
-            _id:jobAdminId
-        },{
-            $set:{
-                adminhandle: 'None'
-            }
-        });
+        // await employee.updateOne({
+        //     _id:jobAdminId
+        // },{
+        //     $set:{
+        //         adminhandle: 'None'
+        //     }
+        // });
         await joborders.updateOne({
             _id:id
         },{
@@ -210,7 +210,7 @@ export const completeStatus = async(req,res) =>{
             }
         });
       
-        await employee.updateOne()
+       // await employee.updateOne()
 
         if(!transaction) return res.json({status:"Transaction Not Exists!"});
         const link = `https://mrquickfixserver.onrender.com/fileUpload/completetransaction/survey/${id}`;
@@ -290,10 +290,13 @@ export const saveSurvey = async(req,res)=>{
                 _id:id,
             },{
                 $set:{
-                    clientSurvey: clientSurvey
+                    clientSurvey: clientSurvey,
+                    feedbackDate: new Date(),
                 }
             }
         );
+
+
         // render("survey",{Status:"Verified"});
         res.render("survey", {status: "verified" });
     }catch(err){
@@ -364,7 +367,7 @@ export const cancelStatus = async(req,res) =>{
     }catch(err){
         return res.json({message:err});
     }
-
+   
 }
 
 
@@ -483,5 +486,5 @@ console.log(err)
 
  export const EmployeeData = async(req,res)=>{
     const {id} = req.body;
-    
+
  }
