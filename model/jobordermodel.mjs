@@ -28,6 +28,7 @@ const JobOrderSchema = mongoose.Schema({
     createdByEmployeeID:{type:String},
     updatedBy:{type:String},
     updatedByEmployeeID:{type:String},
+    updateDate:{type:Date},
     statusAlert:{type:String}
 
 

@@ -31,7 +31,7 @@ export const getJobSearch = async (req,res)=>{
     }
   }
 export const customerInquiry = async(req,res)=>{
-    const {clientFirstName,clientLastName,email,contactNumber,clientConcern,jobStatus} = req.body
+    const {clientFirstName,clientLastName,email,contactNumber,clientConcern,createdBy, createdByEmployeeID,jobStatus} = req.body
     const notifId=''
     try{
 
@@ -42,7 +42,7 @@ export const customerInquiry = async(req,res)=>{
             const resposses = rest._id
 
             const result = await joborder.create({
-                clientFirstName, clientLastName, email,
+                clientFirstName, clientLastName, email, createdBy, createdByEmployeeID,
                 contactNumber,clientConcern,jobStatus,notificationId:resposses
             })
 
@@ -573,7 +573,7 @@ export const clientInquirytoInProgress = async(req,res)=>{
     })
 
     const {id,email, employeeId} = req.params
-    const {contactNumber,clientsAddress,dateStarted,dateEnded,typeOfJob,jobCategory,jobAdminId} = req.body;
+    const {contactNumber,clientsAddress,dateStarted,dateEnded,typeOfJob,jobCategory,updatedBy,updatedByEmployeeID } = req.body;
     const docuNmae =req.file.orignalname;
     try{
     const JobOrder = joborder.findOne({_id:id});
@@ -628,7 +628,9 @@ export const clientInquirytoInProgress = async(req,res)=>{
             dateEnded:dateEnded,
             jobCategory:jobCategory,
             typeOfJob: typeOfJob,
-            jobAdminId: jobAdminId,
+            updatedBy: updatedBy,
+            updatedByEmployeeID: updatedByEmployeeID,
+            updateDate: new Date()
 
         }
     });
@@ -684,7 +686,7 @@ catch(err){
 }
 export const clientinquirytoOnProcess = async(req,res)=>{
     const {id,email} = req.params;
-    const {inspectionSchedule,clientsAddress,jobCategory,contactNumber, typeOfJob} = req.body;
+    const {inspectionSchedule,clientsAddress,jobCategory,contactNumber,updatedBy,updatedByEmployeeID, typeOfJob} = req.body;
 try{
 
 
@@ -733,7 +735,10 @@ try{
           clientsAddress: clientsAddress,
           jobCategory: jobCategory,
           typeOfJob: typeOfJob,
-          contactNumber: contactNumber
+          contactNumber: contactNumber,
+          updatedBy: updatedBy,
+          updatedByEmployeeID: updatedByEmployeeID,
+          updateDate: new Date()
         }
     });
     res.status(201).send("Updated Data");
