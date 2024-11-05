@@ -42,7 +42,7 @@ export const customerInquiry = async(req,res)=>{
             const resposses = rest._id
 
             const result = await joborder.create({
-                clientFirstName, clientLastName, email, createdBy, createdByEmployeeID,
+                clientFirstName, clientLastName, email, createdBy,
                 contactNumber,clientConcern,jobStatus,notificationId:resposses
             })
 
