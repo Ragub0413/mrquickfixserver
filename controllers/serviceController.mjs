@@ -16,6 +16,8 @@ export const newService = async(req,res)=>{
     const types = req.file.mimetype;
     const buffer = req.file.buffer;
     try{
+        const checkName = await service.findOne({serviceName:serviceName});
+        if(checkName) return res.status(400).json({message:"Service Name is already exists"})
         const documentFiles = await new Promise((resolve,reject)=>{ cloudinary.uploader.upload_stream((err,result1)=>{
             if(err) throw err;
      
@@ -75,5 +77,17 @@ export const editServices = async(req,res)=>{
     }catch(err){
         console.log(err)
         res.status(500).json({message:err.message});
+    }
+}
+
+export const getName = async(req,res)=>{
+    const {serviceName} = req.params
+
+    try{
+        const checkName = await service.findOne({serviceName:serviceName});
+        if(checkName) return res.status(400).json({message:"Service Name is already exists"})
+        res.status(200).json({message:"No existing same serviceName"})
+    }catch(error){
+        res.status(500).json({message:err.message})
     }
 }

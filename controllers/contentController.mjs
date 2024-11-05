@@ -1,6 +1,7 @@
 import express, { response } from 'express';
 import mongoose from "mongoose";
 import contentModel from '../model/contentModel.mjs';
+import notificationRead from '../model/notificationRead.mjs';
 
 export const contentManagement = async(req,res)=>{
     const {headline,description}= req.body;
@@ -10,6 +11,17 @@ export const contentManagement = async(req,res)=>{
     }
     catch(err){
         res.status(400).json({message:err.message});
+    }
+}
+export const displayNotification = async(req,res)=>{
+    const {id} = req.params;
+    try{
+        const AdminId =await notificationRead.findOne({adminId:id});
+        res.send(AdminId).status(200)
+    }
+    catch(error){
+        console.log(error);
+        res.status(400).json({message:error.message})
     }
 }
 export const updateContents = async(req,res)=>{

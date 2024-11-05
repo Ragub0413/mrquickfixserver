@@ -8,7 +8,9 @@ const EmployeeSchema = mongoose.Schema({
     contactNumber:{type:String},
     role:{type:String},
     profilePicture:{type:String},
-    adminhandle:{type:String}
+    adminhandle:{type:String},
+    adminReadNotification:{type:Array},
+    profilepicturepublickey:{type:String}
 });
  
 export default mongoose.model("sample-upload",EmployeeSchema)

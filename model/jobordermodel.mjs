@@ -22,7 +22,16 @@ const JobOrderSchema = mongoose.Schema({
     jobCompletion:{type:String},     
     feedbackDate:{type:String},
     inspectionSchedule:{type:String},
-    inquiryDate:{type:String, default: new Date()}
+    notificationId:{type:String},
+    inquiryDate:{type:String, default: new Date()},
+    createdBy:{type:String},
+    createdByEmployeeID:{type:String},
+    updatedBy:{type:String},
+    updatedByEmployeeID:{type:String},
+    statusAlert:{type:String}
+
+
+    
     
 });
 

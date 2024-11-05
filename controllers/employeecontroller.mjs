@@ -5,7 +5,11 @@ import jwt from 'jsonwebtoken';
 import mongoose from "mongoose";
 import mailSender from '../email/email.mjs';
 import employeemodel from '../model/employeemodel.mjs';
+import { v2 as cloudinary } from 'cloudinary';
 const secret='test';
+
+export const storageFile1 = multer.memoryStorage();
+
 
 // const router = express.Router();
 // export const storage = multer.diskStorage({
@@ -162,6 +166,30 @@ export const getEmployeeReset = async(req,res)=>{
         res.send("Not Verify");
     }
 }
+
+export const NotificationRead = async(req,res)=>{
+    const {notificationRead} = req.body;
+    const {id} = req.params;
+
+    try{
+        const userVerify = await employeemodel.findOne({_id:id})
+        if(!userVerify) return res.status(400).json({message: 'User is not define'})
+        
+            await employeemodel.updateOne(
+                {
+                _id:id,
+                },{
+                $push:{
+                    adminReadNotification: notificationRead
+                }
+                
+            }
+        )
+        res.status(200).json({result: userVerify})
+    }catch(err){
+        res.status(500).json({message:err.message})
+    }
+}
 export const savenewPassword = async(req,res)=>{
     const {id, token} = req.params;
       const { password } = req.body;
@@ -273,21 +301,52 @@ export const UpdateSelfPassword = async(req,res)=>{
 
 
 
-export const updateProfile =async(req,res)=>{
+export const updateProfile = async(req,res)=>{
+    cloudinary.config({
+        cloud_name:'dhkewdd7t',
+        api_key:'466831814531458',
+        api_secret:'QzD3d52eKtaYgmZMu8_RMYWLCC4'
+    })
     const {id} = req.params;
-    const {profilePicture} = req.body
+   // const {profilePicture} = req.body
+   const docuNmae =req.file.originalname;
     try{
         const currentEmployee = await employeemodel.findOne({_id:id});
         if(!currentEmployee) return res.status(404).json({message:"Employee not found"});
 
-        await employeemodel.updateOne({
-            _id:id
-        },{ 
-            $set:{
-                profilePicture: profilePicture
-            }
-        });
-        res.status(200).json({result:currentEmployee})
+        const ImgID = currentEmployee.profilepicturepublickey;
+        if(ImgID){
+            await cloudinary.uploader.destroy(ImgID)
+        }
+
+        const buffer = req.file.buffer;
+         const profileUpdate = await new Promise((resolve,reject)=>{ cloudinary.uploader.upload_stream((err,result1)=>{
+        if(err) throw err;
+ 
+        const {url,public_id} = result1;
+         const datas = {
+             url: url,
+             public_id: public_id
+         }
+ 
+         console.log(datas);
+         resolve(result1)
+     },)
+     .end(buffer);
+     })
+
+            await employeemodel.updateOne({
+                _id:id
+            },{ 
+                $set:{
+                    profilePicture: profileUpdate.url,
+                    profilepicturepublickey: profileUpdate.public_id
+
+                }
+            });
+    //    console.log(profilePicture)
+        res.header("Access-Control-Allow-Origin", "*");
+        res.status(200).json({result:"Updated"})
     }
     catch(err){
         res.status(500).json({message:err.message})
