@@ -9,7 +9,7 @@ const DocumentSchema = mongoose.Schema({
     jobEndDate:{type:String},
     url:{type:String},
     public_id:{type:String},
-    type:{type:String},
+    type:{type:String},   
     
 }); 
 
