@@ -264,7 +264,7 @@ export const completeStatus = async(req,res) =>{
             
         )
         console.log(link);
-        res.status(201).json({result});
+        res.status(201).json({transaction});
     }catch(err){
         return res.json(err);
     }
