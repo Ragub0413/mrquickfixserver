@@ -266,7 +266,7 @@ export const createNewInspection = async (req,res) =>{
 }
 export const updateInspectionSched = async(req,res)=>{
     const {id,email} = req.params;
-    const {inspectionDate, updatedBy} = req.body
+    const {inspectionDate, updatedBy,updatedByEmployeeID} = req.body
     try{
     const JobOrder = joborder.findOne({_id:id});
     if(!JobOrder) return res.json({status:"Job Order Not found"});
