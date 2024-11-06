@@ -925,7 +925,7 @@ export const onProcesstoInprogress = async(req,res)=>{
         api_secret:'QzD3d52eKtaYgmZMu8_RMYWLCC4'
     })
     const {id,email} = req.params
-    const {dateStarted,dateEnded} = req.body;
+    const {dateStarted,dateEnded,updatedBy, updatedByEmployeeID} = req.body;
     const docuNmae = req.file.originalname;
     try{
         const JobOrder = joborder.findOne({_id:id});
@@ -957,6 +957,9 @@ export const onProcesstoInprogress = async(req,res)=>{
                 jobQuotationpublickey: documentFiles.public_id,
                 dateStarted:dateStarted,
                 dateEnded:dateEnded,
+                updatedBy:updatedBy,
+                updatedByEmployeeID: updatedByEmployeeID,
+                updateDate: new Date()
 
             }
         });

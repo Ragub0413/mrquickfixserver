@@ -308,6 +308,7 @@ export const saveSurvey = async(req,res)=>{
 export const cancelStatus = async(req,res) =>{
     // const {jobStatusUpdate} = req.body;
     const {id,email} = req.params
+    const {updatedBy, updatedByEmployeeID} = req.body;
     try{
         const transaction = await joborders.findOne({_id:id});
         console.log(id);
@@ -320,6 +321,9 @@ export const cancelStatus = async(req,res) =>{
             },{
                 $set:{
                     jobStatus: "Cancelled",
+                    updatedBy: updatedBy,
+                    updatedByEmployeeID: updatedByEmployeeID,
+                    updateDate: new Date(),
                     dateCancelled: new Date()
                 }
             })
