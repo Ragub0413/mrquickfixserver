@@ -184,6 +184,7 @@ export const sendFileAttachment = async (req,res)=>{
 export const completeStatus = async(req,res) =>{
     // const {email,jobordersId,comment,url,employeeHandle} = req.body;
     const {email,id} = req.params
+    const {updatedBy, updatedByEmployeeID} = req.body
   //  console.log(comment)
     try{
         const transaction = await joborders.findOne({_id:id});
@@ -206,7 +207,9 @@ export const completeStatus = async(req,res) =>{
             $set:{
                 jobStatus: 'Completed',
                 jobCompletion: new Date(),
-            
+                updatedBy: updatedBy,
+                updatedByEmployeeID: updatedByEmployeeID,
+                updateDate: new Date()
             }
         });
       
