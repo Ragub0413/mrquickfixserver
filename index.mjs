@@ -26,7 +26,9 @@ app.set("view engine", "ejs");
 app.use(express.urlencoded({extended:false}));
 
 app.get('/', (req, res) => {
-  res.send('Welcome to my server!');
+  let date = new Date();
+   res.send(date+"");
+  
 });
 app.get('/helloline', (req, res) => {
     res.send('nextline!');
