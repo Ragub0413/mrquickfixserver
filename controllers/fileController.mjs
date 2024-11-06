@@ -335,8 +335,8 @@ export const cancelStatus = async(req,res) =>{
                     jobStatus: "Cancelled",
                     updatedBy: updatedBy,
                     updatedByEmployeeID: updatedByEmployeeID,
-                    updateDate: date+"",
-                    dateCancelled: date+""
+                    updateDate: date+'',
+                    dateCancelled: date+''
                 }
             })
         // }

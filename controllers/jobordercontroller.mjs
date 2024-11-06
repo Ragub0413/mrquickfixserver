@@ -41,7 +41,7 @@ export const customerInquiry = async(req,res)=>{
 
             const result = await joborder.create({
                 clientFirstName, clientLastName, email, createdBy,
-                contactNumber,clientConcern,jobStatus,inquiryDate:date+""
+                contactNumber,clientConcern,jobStatus,inquiryDate:date+''
             })
    
           console.log(result)
@@ -268,7 +268,7 @@ export const updateInspectionSched = async(req,res)=>{
             inspectionSchedule: inspectionDate,
             updatedBy: updatedBy,
             updatedByEmployeeID: updatedByEmployeeID,
-            updateDate: date+""
+            updateDate: date+''
         }
     });
     const sched = inspectionDate
@@ -547,7 +547,7 @@ export const updateEndDatewithFile = async (req,res)=>{
             dateEnded: endDate,
             updatedBy:updatedBy,
             updatedByEmployeeID:updatedByEmployeeID,
-            updateDate: date+""
+            updateDate: date+''
         }
        })
        const mailResponse =await mailSender(
@@ -615,7 +615,7 @@ export const updateOnlyDateEnd = async(req,res)=>{
                 dateEnded: endDate,
                 updatedBy:updatedBy,
                 updatedByEmployeeID:updatedByEmployeeID,
-                updateDate: date+""
+                updateDate: date+''
             }
         })
         const mailResponse =await mailSender(
@@ -796,7 +796,7 @@ export const clientInquirytoInProgress = async(req,res)=>{
             typeOfJob: typeOfJob,
             updatedBy: updatedBy,
             updatedByEmployeeID: updatedByEmployeeID,
-            updateDate: date+""
+            updateDate: date+''
 
         }
     });
@@ -905,7 +905,8 @@ try{
           contactNumber: contactNumber,
           updatedBy: updatedBy,
           updatedByEmployeeID: updatedByEmployeeID,
-          updateDate: date+""
+          updateDate: date+''
+
         }
     });
     res.status(201).send("Updated Data");
@@ -957,7 +958,7 @@ export const onProcesstoInprogress = async(req,res)=>{
                 dateEnded:dateEnded,
                 updatedBy:updatedBy,
                 updatedByEmployeeID: updatedByEmployeeID,
-                updateDate: date+""
+                updateDate: date+''
 
             }
         });
