@@ -32,19 +32,19 @@ export const getJobSearch = async (req,res)=>{
     }
   }
 export const customerInquiry = async(req,res)=>{
-    const {clientFirstName,clientLastName,email,contactNumber,clientConcern,createdBy, createdByEmployeeID,jobStatus} = req.body
+    const {clientFirstName,clientLastName,email,contactNumber,clientConcern,createdBy,jobStatus} = req.body
     const notifId=''
     try{
 
 
       //  if(jobStatus === "Customer Inquiry") {
-            const rest = await notificationmodel.create({clientsFirstName:clientFirstName, clientsLastName:clientLastName, clientsConcern:clientConcern})
+            //const rest = await notificationmodel.create({clientsFirstName:clientFirstName, clientsLastName:clientLastName, clientsConcern:clientConcern})
 
-            const resposses = rest._id
+         //   const resposses = rest._id
 
             const result = await joborder.create({
                 clientFirstName, clientLastName, email, createdBy,
-                contactNumber,clientConcern,jobStatus,notificationId:resposses
+                contactNumber,clientConcern,jobStatus
             })
 
           console.log(result)
