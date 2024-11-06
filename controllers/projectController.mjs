@@ -179,10 +179,11 @@ export const editDetails = async(req,res)=>{
                 thumbnail: thumbnail
             }
         });
-        res.status(200).json({checkProject})
+        res.status(200).json({message:"Updated"})
     }
     catch(err){
         res.status(500).json({message:err.message})
         console.log(err);
     }
 }
+

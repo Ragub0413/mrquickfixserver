@@ -14,9 +14,9 @@ import notificationRouter from './router/notification.mjs'
 
 const app = express();
 app.use(express.json());
-app.use(bodyParser.json({limit: '50mb', extended: true}));
-app.use(bodyParser.urlencoded({limit: "50mb", extended: true, parameterLimit:50000}));
-app.use(bodyParser.text({ limit: '200mb' }));
+app.use(bodyParser.json({limit: '500mb', extended: true}));
+app.use(bodyParser.urlencoded({limit: "500mb", extended: true, parameterLimit:50000}));
+app.use(bodyParser.text({ limit: '500mb' }));
 // app.use(express.bodyParser({limit: '50mb'}));
 app.use(cors());
 app.use(express.static('public'));

@@ -10,7 +10,7 @@ const uploadS = multer({storage:storageSingle})
 // router.post('/postmany',uploadS.single("file"),uploadthumnail)
 router.post('/postmany',upload1.array("file",10), uploadManyImage);
 router.get('/',getAllproject);
-router.patch('/editdetails',editDetails);
-router.patch('/editProject', upload1.array("file",10), editProject)
+router.patch('/editdetails/:id',editDetails);
+router.patch('/editProject/:id', upload1.array("file",10), editProject)
 router.delete('/deleteproject/:id',deleteProject)
 export default router
