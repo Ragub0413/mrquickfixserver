@@ -27,6 +27,7 @@ app.use(express.urlencoded({extended:false}));
 
 app.get('/', (req, res) => {
   let date = new Date();
+   date = date.toUTCString()
    res.send(date+"");
   
 });

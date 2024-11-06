@@ -36,7 +36,8 @@ export const customerInquiry = async(req,res)=>{
     const {clientFirstName,clientLastName,email,contactNumber,clientConcern,createdBy,jobStatus} = req.body
     const notifId=''
     try{
-
+        let date = new Date();
+        date = date.toUTCString();
 
       //  if(jobStatus === "Customer Inquiry") {
             //const rest = await notificationmodel.create({clientsFirstName:clientFirstName, clientsLastName:clientLastName, clientsConcern:clientConcern})
@@ -45,9 +46,9 @@ export const customerInquiry = async(req,res)=>{
 
             const result = await joborder.create({
                 clientFirstName, clientLastName, email, createdBy,
-                contactNumber,clientConcern,jobStatus
+                contactNumber,clientConcern,jobStatus,inquiryDate:date
             })
-        console.log(new Date().toDateString)
+      //  console.log(new Date().toDateString)
           console.log(result)
 
         //}
