@@ -266,7 +266,7 @@ export const createNewInspection = async (req,res) =>{
 }
 export const updateInspectionSched = async(req,res)=>{
     const {id,email} = req.params;
-    const {inspectionDate} = req.body
+    const {inspectionDate, updatedBy} = req.body
     try{
     const JobOrder = joborder.findOne({_id:id});
     if(!JobOrder) return res.json({status:"Job Order Not found"});
@@ -274,7 +274,10 @@ export const updateInspectionSched = async(req,res)=>{
         _id:id
     },{
         $set:{
-            inspectionSchedule: inspectionDate
+            inspectionSchedule: inspectionDate,
+            updatedBy: updatedBy,
+            updatedByEmployeeID: updatedByEmployeeID,
+            updateDate: new Date()
         }
     });
     const sched = inspectionDate
@@ -410,7 +413,7 @@ export const createNewJobOrders = async (req,res)=>{
     })
     const {clientFirstName,clientLastName,email,clientsAddress,typeOfJob,jobCategory,jobStatus,  dateStarted,
         dateEnded,
-        contactNumber, inspectionSchedule,jobAdminId, jobQuotation
+        contactNumber, inspectionSchedule,createdBy, createdByEmployeeID, jobQuotation
     } = req.body;
 
     const docuNmae =req.file.orignalname;
@@ -444,7 +447,8 @@ export const createNewJobOrders = async (req,res)=>{
                 clientFirstName,clientLastName,email,
                 clientsAddress,
                 contactNumber,
-                jobAdminId,
+                createdBy,
+                createdByEmployeeID,
                 dateStarted,
                 dateEnded,
                 typeOfJob,
