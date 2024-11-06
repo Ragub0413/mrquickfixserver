@@ -167,6 +167,9 @@ export const editDetails = async(req,res)=>{
     const {id} = req.params
     const {projectName,category,thumbnail} = req.body;
     try{
+        let date = new Date();
+        date = date.toUTCString();
+
         const checkProject = await project.findOne({_id:id});
         if(!checkProject) return res.status(400).json({message:"Project not found"});
         await project.updateOne({
@@ -175,7 +178,7 @@ export const editDetails = async(req,res)=>{
             $set:{
                projectName: projectName,
                category:category,
-               uploadedDate: new Date(),
+               uploadedDate: date+'',
                 thumbnail: thumbnail
             }
         });

@@ -39,61 +39,48 @@ export const customerInquiry = async(req,res)=>{
         let date = new Date();
         date = date.toUTCString();
 
-      //  if(jobStatus === "Customer Inquiry") {
-            //const rest = await notificationmodel.create({clientsFirstName:clientFirstName, clientsLastName:clientLastName, clientsConcern:clientConcern})
-
-         //   const resposses = rest._id
-
             const result = await joborder.create({
                 clientFirstName, clientLastName, email, createdBy,
-                contactNumber,clientConcern,jobStatus,inquiryDate:date
+                contactNumber,clientConcern,jobStatus,inquiryDate:date+""
             })
-      //  console.log(new Date().toDateString)
+   
           console.log(result)
 
-        //}
+        const mailResponse =await mailSender(
+            email,
+            "Mr. Quick Fix",
+            `<!DOCTYPE html>
+            <html lang="en" >
+            <head>
+                <meta charset="UTF-8">
+                <title>Mr. Quick Fix</title>
 
 
+            </head>
+            <body>
+            <!-- partial:index.partial.html -->
+            <div style="font-family: Helvetica,Arial,sans-serif;min-width:1000px;overflow:auto;line-height:2">
+                <div style="margin:50px auto;width:70%;padding:20px 0">
+                <div style="border-bottom:1px solid #eee">
+                    <a href="" style="font-size:1.4em;color: #00466a;text-decoration:none;font-weight:600">Mr Quick </a>
+                </div>
+                <p style="font-size:1.1em">Hi,</p>
+                <p>Good Day! We received your inquiry.  </p>
+                <p>Please be advice that we will contact you using the phone number that you provided.</p>
+                 <p> Thank you for trusting Mr. Quick Fix </p>
 
+                <p style="font-size:0.9em;">Regards,<br />Mr. Quick Fix</p>
+                <hr style="border:none;border-top:1px solid #eee" />
+                <div style="float:right;padding:8px 0;color:#aaa;font-size:0.8em;line-height:1;font-weight:300">
+                    <p>Mr Quick Fix PH</p>
+                    <p>Philippines</p>
+                </div>
+                </div>
+            </div>
+            <!-- partial -->
 
-
-
-
-        // const mailResponse =await mailSender(
-        //     email,
-        //     "Mr. Quick Fix",
-        //     `<!DOCTYPE html>
-        //     <html lang="en" >
-        //     <head>
-        //         <meta charset="UTF-8">
-        //         <title>Mr. Quick Fix</title>
-
-
-        //     </head>
-        //     <body>
-        //     <!-- partial:index.partial.html -->
-        //     <div style="font-family: Helvetica,Arial,sans-serif;min-width:1000px;overflow:auto;line-height:2">
-        //         <div style="margin:50px auto;width:70%;padding:20px 0">
-        //         <div style="border-bottom:1px solid #eee">
-        //             <a href="" style="font-size:1.4em;color: #00466a;text-decoration:none;font-weight:600">Mr Quick </a>
-        //         </div>
-        //         <p style="font-size:1.1em">Hi,</p>
-        //         <p>Good Day! We received your inquiry.  </p>
-        //         <p>Please be advice that we will contact you using the phone number that you provided.</p>
-        //          <p> Thank you for trusting Mr. Quick Fix </p>
-
-        //         <p style="font-size:0.9em;">Regards,<br />Mr. Quick Fix</p>
-        //         <hr style="border:none;border-top:1px solid #eee" />
-        //         <div style="float:right;padding:8px 0;color:#aaa;font-size:0.8em;line-height:1;font-weight:300">
-        //             <p>Mr Quick Fix PH</p>
-        //             <p>Philippines</p>
-        //         </div>
-        //         </div>
-        //     </div>
-        //     <!-- partial -->
-
-        //     </body>
-        //     </html>`)
+            </body>
+            </html>`)
        res.status(201).json({result});
 
     }catch(err){
@@ -270,6 +257,8 @@ export const updateInspectionSched = async(req,res)=>{
     const {id,email} = req.params;
     const {inspectionDate, updatedBy,updatedByEmployeeID} = req.body
     try{
+        let date = new Date();
+        date = date.toUTCString();
     const JobOrder = joborder.findOne({_id:id});
     if(!JobOrder) return res.json({status:"Job Order Not found"});
     await joborder.updateOne({
@@ -279,7 +268,7 @@ export const updateInspectionSched = async(req,res)=>{
             inspectionSchedule: inspectionDate,
             updatedBy: updatedBy,
             updatedByEmployeeID: updatedByEmployeeID,
-            updateDate: new Date()
+            updateDate: date+""
         }
     });
     const sched = inspectionDate
@@ -521,7 +510,8 @@ export const updateEndDatewithFile = async (req,res)=>{
     })
     const {id,email} = req.params;
     const {endDate,updatedBy,updatedByEmployeeID} = req.body;
-    
+    let date = new Date();
+        date = date.toUTCString();
     try{
         const inprogressData = await joborder.findOne({_id:id});
         const docuNmae =req.file.orignalname;
@@ -557,7 +547,7 @@ export const updateEndDatewithFile = async (req,res)=>{
             dateEnded: endDate,
             updatedBy:updatedBy,
             updatedByEmployeeID:updatedByEmployeeID,
-            updateDate: new Date()
+            updateDate: date+""
         }
        })
        const mailResponse =await mailSender(
@@ -613,7 +603,8 @@ export const updateEndDatewithFile = async (req,res)=>{
 export const updateOnlyDateEnd = async(req,res)=>{
     const {id,email} = req.params;
     const {endDate,updatedBy, updatedByEmployeeID} = req.body;
-
+    let date = new Date();
+        date = date.toUTCString();
     try{
         const inprogressDatas = joborder.findOne({_id:id});
         if(!inprogressDatas) return res.status(400).json({message:"no data found"});
@@ -624,7 +615,7 @@ export const updateOnlyDateEnd = async(req,res)=>{
                 dateEnded: endDate,
                 updatedBy:updatedBy,
                 updatedByEmployeeID:updatedByEmployeeID,
-                updateDate: new Date()
+                updateDate: date+""
             }
         })
         const mailResponse =await mailSender(
@@ -745,7 +736,8 @@ export const clientInquirytoInProgress = async(req,res)=>{
         api_key:'466831814531458',
         api_secret:'QzD3d52eKtaYgmZMu8_RMYWLCC4'
     })
-
+    let date = new Date();
+    date = date.toUTCString();
     const {id,email, employeeId} = req.params
     const {contactNumber,clientsAddress,dateStarted,dateEnded,typeOfJob,jobCategory,updatedBy,updatedByEmployeeID } = req.body;
     const docuNmae =req.file.orignalname;
@@ -804,7 +796,7 @@ export const clientInquirytoInProgress = async(req,res)=>{
             typeOfJob: typeOfJob,
             updatedBy: updatedBy,
             updatedByEmployeeID: updatedByEmployeeID,
-            updateDate: new Date()
+            updateDate: date+""
 
         }
     });
@@ -862,7 +854,8 @@ export const clientinquirytoOnProcess = async(req,res)=>{
     const {id,email} = req.params;
     const {inspectionSchedule,clientsAddress,jobCategory,contactNumber,updatedBy,updatedByEmployeeID, typeOfJob} = req.body;
 try{
-
+    let date = new Date();
+    date = date.toUTCString();
 
     const mailResponse = await mailSender(
         email,
@@ -912,7 +905,7 @@ try{
           contactNumber: contactNumber,
           updatedBy: updatedBy,
           updatedByEmployeeID: updatedByEmployeeID,
-          updateDate: new Date()
+          updateDate: date+""
         }
     });
     res.status(201).send("Updated Data");
@@ -927,6 +920,8 @@ export const onProcesstoInprogress = async(req,res)=>{
         api_key:'466831814531458',
         api_secret:'QzD3d52eKtaYgmZMu8_RMYWLCC4'
     })
+    let date = new Date();
+        date = date.toUTCString();
     const {id,email} = req.params
     const {dateStarted,dateEnded,updatedBy, updatedByEmployeeID} = req.body;
     const docuNmae = req.file.originalname;
@@ -962,7 +957,7 @@ export const onProcesstoInprogress = async(req,res)=>{
                 dateEnded:dateEnded,
                 updatedBy:updatedBy,
                 updatedByEmployeeID: updatedByEmployeeID,
-                updateDate: new Date()
+                updateDate: date+""
 
             }
         });

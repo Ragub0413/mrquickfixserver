@@ -186,6 +186,9 @@ export const completeStatus = async(req,res) =>{
     const {email,id} = req.params
     const {updatedBy, updatedByEmployeeID} = req.body
   //  console.log(comment)
+  let date = new Date();
+  date = date.toUTCString();
+
     try{
         const transaction = await joborders.findOne({_id:id});
         console.log(id);
@@ -206,10 +209,10 @@ export const completeStatus = async(req,res) =>{
         },{
             $set:{
                 jobStatus: 'Completed',
-                jobCompletion: new Date(),
+                jobCompletion: date+'',
                 updatedBy: updatedBy,
                 updatedByEmployeeID: updatedByEmployeeID,
-                updateDate: new Date()
+                updateDate: date+''
             }
         });
       
@@ -286,6 +289,9 @@ export const saveSurvey = async(req,res)=>{
     const {clientSurvey} = req.body;
     const transaction = await joborders.findOne({_id:id});
     if(!transaction) return res.json({status:"Transaction not found!"});
+    let date = new Date();
+    date = date.toUTCString();
+
     try{
         // const verify = jwt.verify(token,secret);
         await joborders.updateOne(
@@ -294,7 +300,7 @@ export const saveSurvey = async(req,res)=>{
             },{
                 $set:{
                     clientSurvey: clientSurvey,
-                    feedbackDate: new Date(),
+                    feedbackDate: date+'',
                 }
             }
         );
@@ -313,6 +319,9 @@ export const cancelStatus = async(req,res) =>{
     const {id,email} = req.params
     const {updatedBy, updatedByEmployeeID} = req.body;
     try{
+        let date = new Date();
+        date = date.toUTCString();
+
         const transaction = await joborders.findOne({_id:id});
         console.log(id);
         if(!transaction) return res.status(400).json({status:"Transaction Not Exists!"});
@@ -326,8 +335,8 @@ export const cancelStatus = async(req,res) =>{
                     jobStatus: "Cancelled",
                     updatedBy: updatedBy,
                     updatedByEmployeeID: updatedByEmployeeID,
-                    updateDate: new Date(),
-                    dateCancelled: new Date()
+                    updateDate: date+"",
+                    dateCancelled: date+""
                 }
             })
         // }

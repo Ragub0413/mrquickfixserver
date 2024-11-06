@@ -26,8 +26,8 @@ app.set("view engine", "ejs");
 app.use(express.urlencoded({extended:false}));
 
 app.get('/', (req, res) => {
-  let date = new Date();
-   date = date.toUTCString()
+  let date = new Date().toLocaleDateString();
+  // date = date.toUTCString()
    res.send(date+"");
   
 });
