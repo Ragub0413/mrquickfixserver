@@ -5,6 +5,7 @@ import mailSender from '../email/email.mjs';
 import multer from 'multer';
 import { v2 as cloudinary } from 'cloudinary';
 import notificationmodel from '../model/notificationmodel.mjs';
+import jobordermodel from '../model/jobordermodel.mjs';
 
 export const storageFile1 = multer.memoryStorage();
 
@@ -503,6 +504,172 @@ export const createNewJobOrders = async (req,res)=>{
         catch(err){
             console.log(err)
         }
+}
+
+export const updateEndDatewithFile = async (req,res)=>{
+    cloudinary.config({
+        cloud_name:'dhkewdd7t',
+        api_key:'466831814531458',
+        api_secret:'QzD3d52eKtaYgmZMu8_RMYWLCC4'
+    })
+    const {id,email} = req.params;
+    const {endDate,updatedBy,updatedByEmployeeID} = req.body;
+    
+    try{
+        const inprogressData = await joborder.findOne({_id:id});
+        const docuNmae =req.file.orignalname;
+        if(!inprogressData) return res.status(400).json({message:"No available data"})
+        const docuID = inprogressData.jobQuotationpublickey;
+        if(docuID){
+            await cloudinary.uploader.destroy(docuID)
+        }
+
+        const buffer = req.file.buffer;
+       const docuUpdate = await new Promise((resolve,reject)=>{
+        cloudinary.uploader.upload_stream((err,result1)=>{
+            if(err) throw err;
+            
+        const {url,public_id} = result1;
+        const datas = {
+            url: url,
+            public_id: public_id
+        }
+        console.log(datas);
+        resolve(result1)
+        },)
+        .end(buffer)
+       })
+
+       await jobordermodel.updateOne({
+        _id:id
+       },{
+        $set:{
+            jobQuotationLink: docuUpdate.url,
+            jobQuotationpublickey: docuUpdate.public_id,
+            jobQuotation: docuNmae,
+            dateEnded: endDate,
+            updatedBy:updatedBy,
+            updatedByEmployeeID:updatedByEmployeeID,
+            updateDate: new Date()
+        }
+       })
+       const mailResponse =await mailSender(
+        email,
+        "Mr. Quick Fix",
+        `<!DOCTYPE html>
+        <html lang="en" >
+        <head>
+            <meta charset="UTF-8">
+            <title>Mr. Quick Fix PH</title>
+
+
+        </head>
+        <body>
+        <!-- partial:index.partial.html -->
+        <div style="font-family: Helvetica,Arial,sans-serif;min-width:1000px;overflow:auto;line-height:2">
+            <div style="margin:50px auto;width:70%;padding:20px 0">
+            <div style="border-bottom:1px solid #eee">
+                <a href="" style="font-size:1.4em;color: #00466a;text-decoration:none;font-weight:600">Mr Quick Project Update</a>
+            </div>
+            <p style="font-size:1.1em">Hi,</p>
+            <p>Good Day! This email is to inform you that your project with us was adjusted.
+            This project starts at ${inprogressData.dateStarted} and the new end date will be on ${endDate}</p>
+            <p>Please be advice that we will contact you with other details using the phone number that you provided.</p>
+             <p>The file attached is the <b>Quotation File</b> of this project. This will also served as your copy. </p>
+             <p>Thank you for trusting Mr. Quick Fix!</p>
+
+            <p style="font-size:0.9em;">Regards,<br />Mr. Quick Fix</p>
+            <hr style="border:none;border-top:1px solid #eee" />
+            <div style="float:right;padding:8px 0;color:#aaa;font-size:0.8em;line-height:1;font-weight:300">
+                <p>Mr Quick Fix PH</p>
+                <p>Philippines</p>
+            </div>
+            </div>
+        </div>
+        <!-- partial -->
+
+        </body>
+        </html>`,
+        {
+            filename: 'Quotation',
+            path:docuUpdate.url
+            // link`http://localhost:5000/file/${documentFile}`
+         }
+    )
+    res.status(200).json({message:"Updated In Progress Data"})
+    }
+    catch(err){
+        console.log(err);
+        res.status(500).json({message:err.message})
+    }
+}
+export const updateOnlyDateEnd = async(req,res)=>{
+    const {id,email} = req.params;
+    const {endDate,updatedBy, updatedByEmployeeID} = req.body;
+
+    try{
+        const inprogressDatas = joborder.findOne({_id:id});
+        if(!inprogressDatas) return res.status(400).json({message:"no data found"});
+        await joborder.updateOne({
+            _id:id
+        },{
+            $set:{
+                dateEnded: endDate,
+                updatedBy:updatedBy,
+                updatedByEmployeeID:updatedByEmployeeID,
+                updateDate: new Date()
+            }
+        })
+        const mailResponse =await mailSender(
+            email,
+            "Mr. Quick Fix",
+            `<!DOCTYPE html>
+            <html lang="en" >
+            <head>
+                <meta charset="UTF-8">
+                <title>Mr. Quick Fix PH</title>
+    
+    
+            </head>
+            <body>
+            <!-- partial:index.partial.html -->
+            <div style="font-family: Helvetica,Arial,sans-serif;min-width:1000px;overflow:auto;line-height:2">
+                <div style="margin:50px auto;width:70%;padding:20px 0">
+                <div style="border-bottom:1px solid #eee">
+                    <a href="" style="font-size:1.4em;color: #00466a;text-decoration:none;font-weight:600">Mr Quick Project Update</a>
+                </div>
+                <p style="font-size:1.1em">Hi,</p>
+                <p>Good Day! This email is to inform you that your project with us was adjusted.
+                The project new end date will be on ${endDate}</p>
+                <p>Please be advice that we will contact you with other details using the phone number that you provided.</p>
+                 <p> We will be using the same Quotation for this project as what we discuss on phone. Thank you!
+    
+                <p style="font-size:0.9em;">Regards,<br />Mr. Quick Fix</p>
+                <hr style="border:none;border-top:1px solid #eee" />
+                <div style="float:right;padding:8px 0;color:#aaa;font-size:0.8em;line-height:1;font-weight:300">
+                    <p>Mr Quick Fix PH</p>
+                    <p>Philippines</p>
+                </div>
+                </div>
+            </div>
+            <!-- partial -->
+    
+            </body>
+            </html>`
+            ,
+            {
+                filename:inprogressDatas.jobQuotation,
+                path: inprogressDatas.jobQuotationLink
+                // link`http://localhost:5000/file/${documentFile}`
+             }
+        )
+        
+        res.status(200).json({message:"Updated Data"})
+    }
+    catch(err){
+        console.log(err);
+        res.status(500).json({message:err.message})
+    }
 }
 export const deleteCustomerInquiry= async(req, res)=>{
     const {id,email} = req.params
