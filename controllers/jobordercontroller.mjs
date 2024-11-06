@@ -271,7 +271,7 @@ export const updateInspectionSched = async(req,res)=>{
     const JobOrder = joborder.findOne({_id:id});
     if(!JobOrder) return res.json({status:"Job Order Not found"});
     await joborder.updateOne({
-        _id:id
+        _id:id 
     },{
         $set:{
             inspectionSchedule: inspectionDate,
