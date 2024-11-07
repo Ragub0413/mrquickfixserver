@@ -191,6 +191,7 @@ export const completeStatus = async(req,res) =>{
 
     try{
         const transaction = await joborders.findOne({_id:id});
+        if(!transaction) return res.json({status:"Transaction Not Exists!"});
         console.log(id);
       
 
@@ -218,7 +219,7 @@ export const completeStatus = async(req,res) =>{
       
        // await employee.updateOne()
 
-        if(!transaction) return res.json({status:"Transaction Not Exists!"});
+       
         const link = `https://mrquickfixserver.onrender.com/fileUpload/completetransaction/survey/${id}`;
         const mailResponse = await mailSender(
             email,
