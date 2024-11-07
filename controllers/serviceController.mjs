@@ -84,8 +84,8 @@ export const editServices = async(req,res)=>{
     const types = req.file.mimetype;
     const buffer = req.file.buffer;
     try{
-        const checkName = await service.findOne({serviceName:serviceName});
-        if(!checkName) return res.status(400).json({message:"Service Name unknown"})
+        const services = service.findOne({serviceName:serviceName});
+        if(!services) return res.status(400).json({message:"This data is unknown"});
         const documentFiles = await new Promise((resolve,reject)=>{ cloudinary.uploader.upload_stream((err,result1)=>{
             if(err) throw err;
 
