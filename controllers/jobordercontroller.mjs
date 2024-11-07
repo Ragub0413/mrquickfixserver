@@ -112,9 +112,10 @@ export const sentEmailForInspection = async (req,res)=>{
     const {clientFirstName,clientLastName,email,clientsAddress,typeOfJob,jobCategory,jobStatus,
         contactNumber,createdBy,createdByEmployeeID,dateStarted,dateEnded, inspectionSchedule
     } = req.body;
-    try{
+    try{ let date = new Date();
+        date = date.toUTCString();
         const result = await joborder.create({clientFirstName,clientLastName,email,clientsAddress,typeOfJob,jobCategory,jobStatus,
-            contactNumber,createdBy,createdByEmployeeID,dateStarted,dateEnded,inspectionSchedule
+            contactNumber,createdBy,createdByEmployeeID,dateStarted,dateEnded,inspectionSchedule, inquiryDate:date+''
         });
 
 
@@ -249,7 +250,7 @@ export const UpdateStatusEmployee = async(req,res)=>{
 export const createNewInspection = async (req,res) =>{
      const {clientFirstName,clientLastName,email,clientsAddress,typeOfJob,jobCategory,jobStatus,  dateStarted,
         dateEnded,
-        contactNumber, inspectionSchedule,jobAdmin, jobQuotation
+        contactNumber, inspectionSchedule,jobAdmin, jobQuotation,inquiryDate
     } = req.body;
 
 }
@@ -402,11 +403,13 @@ export const createNewJobOrders = async (req,res)=>{
         api_key:'466831814531458',
         api_secret:'QzD3d52eKtaYgmZMu8_RMYWLCC4'
     })
+    
     const {clientFirstName,clientLastName,email,clientsAddress,typeOfJob,jobCategory,jobStatus,  dateStarted,
         dateEnded,
-        contactNumber, inspectionSchedule,createdBy, createdByEmployeeID, jobQuotation
+        contactNumber, inspectionSchedule,createdBy, createdByEmployeeID, jobQuotation,inquiryDate
     } = req.body;
-
+    let date = new Date();
+    date = date.toUTCString();
     const docuNmae =req.file.orignalname;
     const types = req.file.mimetype;
     const buffer = req.file.buffer;
@@ -445,6 +448,7 @@ export const createNewJobOrders = async (req,res)=>{
                 typeOfJob,
                 jobCategory,
                 jobStatus,
+                inquiryDate:date+''
                 
             })
             console.log(result);
