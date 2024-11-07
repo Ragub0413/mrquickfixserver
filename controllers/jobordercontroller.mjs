@@ -6,9 +6,10 @@ import multer from 'multer';
 import { v2 as cloudinary } from 'cloudinary';
 import notificationmodel from '../model/notificationmodel.mjs';
 import jobordermodel from '../model/jobordermodel.mjs';
-
 export const storageFile1 = multer.memoryStorage();
-
+// dayjs.extend(utc);
+//   dayjs.extend(timezone);
+//   dayjs.tz.setDefault("Etc/GMT+8");
 
 
 export const getAllJobOders = async (req,res)=>{
@@ -46,7 +47,7 @@ export const customerInquiry = async(req,res)=>{
                 clientFirstName, clientLastName, email, createdBy,
                 contactNumber,clientConcern,jobStatus
             })
-
+        console.log(new Date().toDateString)
           console.log(result)
 
         //}
@@ -453,7 +454,8 @@ export const createNewJobOrders = async (req,res)=>{
                 dateEnded,
                 typeOfJob,
                 jobCategory,
-                jobStatus
+                jobStatus,
+                
             })
             console.log(result);
             const mailResponse =await mailSender(

@@ -1,5 +1,4 @@
 import mongoose from "mongoose";
-
 const JobOrderSchema = mongoose.Schema({
     clientFirstName:{type: String},
     clientLastName:{type:String},
@@ -23,7 +22,7 @@ const JobOrderSchema = mongoose.Schema({
     feedbackDate:{type:String},
     inspectionSchedule:{type:String},
     notificationId:{type:String},
-    inquiryDate:{type:String, default: new Date()},
+    inquiryDate:{type:String, default:new Date()},
     createdBy:{type:String},
     createdByEmployeeID:{type:String},
     updatedBy:{type:String},
