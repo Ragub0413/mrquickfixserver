@@ -80,8 +80,8 @@ export const createNewEmployee = async(req,res)=>{
     try{
        // var dbo = db.dat
      
-    //    const oldEmployee = await Employee.findOne({_id});
-    //    if(oldEmployee) return res.status(400).json({message:'Staff already exist'});
+       const oldEmployee = await Employee.findOne({email:email});
+       if(oldEmployee) return res.status(400).json({message:'Staff already exist'});
         const hashedPassword = await bcryptjs.hash(password,12);
         const result = await employeemodel.create({firstName,lastName,email,role   ,password: hashedPassword,contactNumber,profilePicture });
         res.status(201).json({result});

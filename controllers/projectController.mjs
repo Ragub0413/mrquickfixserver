@@ -182,7 +182,7 @@ export const editDetails = async(req,res)=>{
                 thumbnail: thumbnail
             }
         });
-        res.status(200).json({message:"Updated"})
+        res.status(200).json({checkProject})
     }
     catch(err){
         res.status(500).json({message:err.message})
