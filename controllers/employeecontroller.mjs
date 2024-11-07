@@ -30,11 +30,11 @@ export const loginEmployee = async(req,res)=>{
     try{
       
         const existingEmployee = await employeemodel.findOne({email});
-        if(!existingEmployee)return res.status(404).json({ message: "User doesn't exist" });
+        if(!existingEmployee)return res.status(404).json({ message: "Wrong Email, Please try again" });
 
         const isPasswordCorrect = await bcryptjs.compare(password, existingEmployee.password) || existingEmployee.password == password;
         // const token = jwt.sign({ email: oldUser.email, id: oldUser._id }, secret, { expiresIn: "1h" });
-        if (!isPasswordCorrect) return res.status(400).json({ message: "Invalid credentials" });
+        if (!isPasswordCorrect) return res.status(400).json({ message: "Wrong password, please try again" });
         
         // const sec = secret+existingEmployee.password;
         // const token = jwt.sign({email:existingEmployee.email, id:existingEmployee._id},sec,{

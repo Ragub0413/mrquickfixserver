@@ -124,10 +124,11 @@ if (JSON.parse(status) == "verified") {
       if (!password || !confirmPassword) {
           isValid = false;
       }
-      if(password.length > 5 && confirmPassword > 5){
+      if(password.length < 5 && confirmPassword < 5){
         errorElement.textContent = 'Password should have minimum 4 characters'
 
       }
+      // if(password.length)
 
       if (password !== confirmPassword) {
           errorElement.textContent = 'Passwords do not match';
