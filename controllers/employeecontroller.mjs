@@ -75,13 +75,20 @@ export const validateEmail = async(req,res)=>{
     }
 }
 export const createNewEmployee = async(req,res)=>{
-    const {firstName,lastName,email,password,role,contactNumber,profilePicture} = req.body;
+    const {firstName,
+        lastName,
+        email,password,role,contactNumber,profilePicture} = req.body;
+
     console.log(password);
+    console.log(email);
     try{
        // var dbo = db.dat
+       
      
-       const oldEmployee = await Employee.findOne({email:email});
-       if(oldEmployee) return res.status(400).json({message:'Staff already exist'});
+       const oldEmployees = await employeemodel.findOne({email:email});
+       
+       if(oldEmployees) return res.status(400).json({message:'Email already existed'})
+        console.log('Here na')
         const hashedPassword = await bcryptjs.hash(password,12);
         const result = await employeemodel.create({firstName,lastName,email,role   ,password: hashedPassword,contactNumber,profilePicture });
         res.status(201).json({result});
@@ -157,7 +164,7 @@ export const getEmployeeReset = async(req,res)=>{
     const {id,token} = req.params;
     console.log(req.params);
     const oldUser = await employeemodel.findOne({_id:id});
-    if(!oldUser) return res.json({status:"User not found!"});
+    if(!oldUser) return res.status(400).json({status:"User not found!"});
     const sec = secret+oldUser.password;
     try{
         const verify = jwt.verify(token,sec);
