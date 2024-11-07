@@ -148,7 +148,7 @@ export const editProject  =async(req,res) =>{
             $set:{
                projectName: projectName,
                category:category,
-               uploadedDate: new Date(),
+               uploadedDate: Date.now(),
                thumbnail: thumbnail,
                image:uploads
             }
